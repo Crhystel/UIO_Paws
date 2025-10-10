@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-g">
+    <meta charset="UTF-8"> 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'UIO Paws')</title>
     <!-- Bootstrap CSS -->
@@ -37,7 +37,7 @@
                         </li>
                     @else
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('login.form') }}">Iniciar Sesión</a>
+                            <a class="nav-link" href="{{ route('login') }}">Iniciar Sesión</a>
                         </li>
                         <li class="nav-item">
                             <a class="btn btn-primary" href="{{ route('register.form') }}">Registrarse</a>

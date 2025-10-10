@@ -27,33 +27,44 @@ class AuthController extends Controller
 
         $response = Http::post(env('API_BASE_URL') . '/register', $validated);
         if ($response->successful()) {
-            return redirect()->route('login.form')->with('success', '¡Registro exitoso! Por favor, inicia sesión.');
+            return redirect()->route('login')->with('success', '¡Registro exitoso! Por favor, inicia sesión.');
         }
 
         return back()->withErrors($response->json('errors'))->withInput();
     }
 
     public function login(Request $request)
-    {
-        $validated = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
-        $response = Http::post(env('API_BASE_URL') . '/login', $validated);
-        if ($response->failed()) {
-            return back()->withErrors(['email' => 'Las credenciales proporcionadas son incorrectas.'])->withInput();
-        }
+{
+    $validated = $request->validate([
+        'email' => 'required|email',
+        'password' => 'required',
+    ]);
 
-        $data = $response->json();
-        Session::put('api_token', $data['access_token']);
-        Session::put('user_role', $data['user_role']);
-        Session::put('user_name', $request->email); 
-        if ($data['user_role'] === 'admin') {
-            return redirect()->route('admin.users.index');
-        }
+    $response = Http::post(env('API_BASE_URL') . '/login', $validated);
 
-        return redirect()->route('dashboard');
+    if ($response->failed()) {
+        return back()->withErrors(['email' => 'Las credenciales proporcionadas son incorrectas.'])->withInput();
     }
+
+    $data = $response->json();
+
+    // Validar que $data sea un array antes de acceder a offsets
+    if (!is_array($data)) {
+        return back()->withErrors(['email' => 'Error inesperado al iniciar sesión.'])->withInput();
+    }
+
+    $userRole = $data['user_role'] ?? 'user';
+
+    Session::put('api_token', $data['access_token'] ?? null);
+    Session::put('user_role', $userRole); 
+    Session::put('user_name', $request->email);
+
+    if ($userRole === 'admin') {
+        return redirect()->route('admin.users.index');
+    }
+
+    return redirect()->route('dashboard');
+}
 
     public function logout(Request $request)
     {

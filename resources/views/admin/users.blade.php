@@ -4,7 +4,11 @@
 
 @section('content')
     <h1>Panel de Administración de Usuarios</h1>
-    <p>Aquí puedes ver todos los usuarios del sistema.</p>
+    <p>Aquí puedes ver, editar y eliminar los usuarios del sistema.</p>
+    
+    @if(session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
 
     <div class="card">
         <div class="card-body">
@@ -26,8 +30,12 @@
                             <td>{{ $user['email'] }}</td>
                             <td><span class="badge bg-{{ $user['role'] === 'admin' ? 'success' : 'secondary' }}">{{ $user['role'] }}</span></td>
                             <td>
-                                <a href="#" class="btn btn-sm btn-info">Editar</a>
-                                <a href="#" class="btn btn-sm btn-danger">Eliminar</a>
+                                <a href="{{ route('admin.users.edit', $user['id']) }}" class="btn btn-sm btn-info">Editar</a>
+                                <form action="{{ route('admin.users.destroy', $user['id']) }}" method="POST" class="d-inline" onsubmit="return confirm('¿Seguro?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
+                                </form>
                             </td>
                         </tr>
                     @empty
