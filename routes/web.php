@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\SuperAdminController;
+use App\Http\Controllers\SuperAdmin\UserController as SuperAdminUserController;
 
 Route::get('/', function() {
     return view('welcome'); 
@@ -17,7 +18,7 @@ Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('regi
 Route::post('/register', [AuthController::class, 'register'])->name('register.submit')->middleware('guest');
 
 
-// --- Rutas Protegidas (Requieren estar logueado) ---
+// --- Rutas Protegidas ---
 Route::middleware('auth.user')->group(function () {
     
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
@@ -33,5 +34,6 @@ Route::middleware('auth.user')->group(function () {
     // Rutas solo para Super Admins
     Route::middleware('is.superadmin')->prefix('superadmin')->name('superadmin.')->group(function () {
         Route::get('/dashboard', [SuperAdminController::class, 'dashboard'])->name('dashboard');
+        Route::resource('users', SuperAdminUserController::class);
     });
 });

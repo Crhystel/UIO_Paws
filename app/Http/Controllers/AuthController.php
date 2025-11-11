@@ -19,21 +19,24 @@ class AuthController extends Controller
         return view('auth.register');
     }
 
-    public function register(Request $request)
+     public function register(Request $request)
     {
         $validated = $request->validate([
             'first_name' => 'required|string|max:255',
+            'middle_name' => 'nullable|string|max:255', 
             'last_name' => 'required|string|max:255',
+            'second_last_name' => 'nullable|string|max:255', 
+            'document_type' => 'required|string|max:255',
+            'document_number' => 'required|string|max:255',
+            'phone' => 'required|string|max:20',
             'email' => 'required|string|email|max:255',
             'password' => 'required|string|min:8|confirmed',
         ]);
-
         $response = Http::post(env('API_BASE_URL') . '/register', $validated);
 
         if ($response->successful()) {
             return redirect()->route('login')->with('success', '¡Registro exitoso! Por favor, inicia sesión.');
         }
-
         return back()->withErrors($response->json('errors'))->withInput();
     }
 

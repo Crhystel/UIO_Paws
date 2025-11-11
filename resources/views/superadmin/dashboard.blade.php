@@ -12,7 +12,7 @@
                 <div class="card-body">
                     <h5 class="card-title">Gestión de Usuarios</h5>
                     <p class="card-text">Crear nuevos administradores, editar perfiles de usuario o eliminar cuentas del sistema.</p>
-                    <a href="#" class="btn btn-danger">Administrar Usuarios</a>
+                    <a href="{{ route('superadmin.users.index') }}" class="btn btn-danger">Administrar Usuarios</a>
                 </div>
             </div>
         </div>
