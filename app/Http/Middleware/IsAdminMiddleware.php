@@ -13,11 +13,10 @@ class IsAdminMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        // Verifica que el usuario tenga rol admin en sesión
-        if (Session::get('role') !== 'admin') {
-            return redirect()->route('dashboard')->with('error', 'No tienes acceso a esta sección.');
+        $userRole = Session::get('user_role');
+        if ($userRole !== 'Admin' && $userRole !== 'Super Admin') {
+            return redirect()->route('dashboard')->with('error', 'No tienes permisos para acceder a esta sección.');
         }
-
         return $next($request);
     }
 }
