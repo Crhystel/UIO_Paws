@@ -15,6 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'auth.user' => \App\Http\Middleware\AuthUserMiddleware::class,
             'is.admin' => \App\Http\Middleware\IsAdminMiddleware::class,
             'is.superadmin' => \App\Http\Middleware\IsSuperAdminMiddleware::class,
+            'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
