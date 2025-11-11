@@ -43,7 +43,6 @@ class AuthController extends Controller
             'email' => 'required|email',
             'password' => 'required',
         ]);
-
         $response = Http::post(env('API_BASE_URL') . '/login', $validated);
 
         if ($response->failed()) {
