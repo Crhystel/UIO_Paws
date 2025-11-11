@@ -18,7 +18,6 @@ Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('regi
 Route::post('/register', [AuthController::class, 'register'])->name('register.submit')->middleware('guest');
 
 
-// --- Rutas Protegidas ---
 Route::middleware('auth.user')->group(function () {
     
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
@@ -26,9 +25,15 @@ Route::middleware('auth.user')->group(function () {
     // Dashboard para rol 'User'
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     
-    // Rutas para Admins (y Super Admins)
+    // Rutas para Admins (y Super Admins, ya que 'is.admin' debería incluirlos)
     Route::middleware('is.admin')->prefix('admin')->name('admin.')->group(function () {
+        
+        // Esta es la ruta que ya tenías para el panel de admin
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+        Route::resource('animals', \App\Http\Controllers\Admin\AnimalController::class);
+        Route::resource('shelters', \App\Http\Controllers\Admin\ShelterController::class);
+        Route::resource('species', \App\Http\Controllers\Admin\SpeciesController::class);
+        Route::resource('breeds', \App\Http\Controllers\Admin\BreedController::class);
     });
     
     // Rutas solo para Super Admins
