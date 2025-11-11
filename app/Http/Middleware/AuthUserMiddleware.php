@@ -13,7 +13,6 @@ class AuthUserMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        // Si no hay token o sesión, redirige al login
         if (!Session::has('api_token')) {
             return redirect()->route('login');
         }

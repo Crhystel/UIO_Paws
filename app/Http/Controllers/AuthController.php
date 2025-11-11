@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
@@ -46,29 +47,39 @@ class AuthController extends Controller
         $response = Http::post(env('API_BASE_URL') . '/login', $validated);
 
         if ($response->failed()) {
-            return back()->withErrors(['email' => 'Las credenciales proporcionadas son incorrectas.'])->withInput();
+            throw ValidationException::withMessages([
+                'email' => 'Las credenciales proporcionadas son incorrectas.',
+            ]);
         }
 
         $data = $response->json();
-        
         Session::put('api_token', $data['access_token']);
         Session::put('user_role', $data['user_role']);
-        $userName = $data['user_profile']['first_name'] ?? explode('@', $data['user_profile']['email'])[0];
-        Session::put('user_name', $userName);
+        $profileResponse = Http::withToken($data['access_token'])->get(env('API_BASE_URL') . '/profile');
+        if($profileResponse->successful()){
+            $userProfile = $profileResponse->json();
+            Session::put('user_name', $userProfile['first_name']);
+        } else {
+             Session::put('user_name', 'Usuario');
+        }
+
+
         switch ($data['user_role']) {
             case 'Super Admin':
-                return redirect()->route('superadmin.users.index');
+                return redirect()->intended(route('superadmin.dashboard'));
             case 'Admin':
-                return redirect()->route('admin.dashboard');
-            default:
-                return redirect()->route('dashboard');
+                return redirect()->intended(route('admin.dashboard'));
+            default: 
+                return redirect()->intended(route('dashboard'));
         }
     }
 
     public function logout(Request $request)
     {
         Http::withToken(Session::get('api_token'))->post(env('API_BASE_URL') . '/logout');
+        
         Session::flush();
+        
         return redirect()->route('home');
     }
 }
