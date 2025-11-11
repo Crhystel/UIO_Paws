@@ -10,7 +10,7 @@
             <form action="{{ route('superadmin.users.store') }}" method="POST">
                 @csrf
                 
-                @include('superadmin.users._form', ['user' => null])
+                @include('superadmin.users.form', ['user' => null])
 
                 <div class="mt-4">
                     <a href="{{ route('superadmin.users.index') }}" class="btn btn-secondary">Cancelar</a>
