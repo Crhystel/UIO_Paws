@@ -1,57 +1,36 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8"> 
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'UIO Paws')</title>
+    <title>@yield('title', 'UIO Paws - Adopción de Animales')</title>
+    
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Estilos personalizados -->
     <style>
-        body { background-color: #f8f9fa; }
-        .navbar { background-color: #ffffff; box-shadow: 0 2px 4px rgba(0,0,0,.1); }
+        body { background-color: #f4f7f6; }
+        .navbar { box-shadow: 0 2px 4px rgba(0,0,0,.08); }
+        .card { border: none; box-shadow: 0 1px 3px rgba(0,0,0,.12), 0 1px 2px rgba(0,0,0,.24); }
+        .btn-primary { background-color: #005A8D; border-color: #005A8D; }
+        .btn-primary:hover { background-color: #004B74; border-color: #004B74; }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light">
-        <div class="container">
-            <a class="navbar-brand" href="{{ route('home') }}">🐾 UIO Paws</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    @if(Session::has('api_token'))
-                        @if(Session::get('user_role') === 'admin')
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('admin.users.index') }}">Gestionar Usuarios</a>
-                            </li>
-                        @endif
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('dashboard') }}">Mi Panel</a>
-                        </li>
-                        <li class="nav-item">
-                            <form action="{{ route('logout') }}" method="POST">
-                                @csrf
-                                <button type="submit" class="btn btn-link nav-link">Cerrar Sesión</button>
-                            </form>
-                        </li>
-                    @else
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('login') }}">Iniciar Sesión</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="btn btn-primary" href="{{ route('register.form') }}">Registrarse</a>
-                        </li>
-                    @endif
-                </ul>
-            </div>
-        </div>
-    </nav>
 
-    <main class="container my-5">
+    @include('layouts.partials.navbar')
+
+    <main class="container my-4 my-md-5">
+        @include('layouts.partials.messages')
         @yield('content')
     </main>
 
+    <footer class="text-center text-muted py-4 mt-auto">
+        <p>&copy; {{ date('Y') }} UIO Paws. Todos los derechos reservados.</p>
+    </footer>
+
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
