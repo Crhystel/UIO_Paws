@@ -10,7 +10,7 @@
             <form action="{{ route('superadmin.users.update', $user['id_user']) }}" method="POST">
                 @csrf
                 @method('PUT')
-                @include('superadmin.users._form')
+                @include('superadmin.users.form')
 
                 <div class="mt-4">
                     <a href="{{ route('superadmin.users.index') }}" class="btn btn-secondary">Cancelar</a>
