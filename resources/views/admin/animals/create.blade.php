@@ -9,7 +9,7 @@
             <h1 class="h3 mb-0">Añadir Nuevo Animal</h1>
         </div>
         <div class="card-body">
-            <form action="{{ route('admin.animals.store') }}" method="POST">
+            <form action="{{ route('admin.animals.store') }}" method="POST" enctype="multipart/form-data">
                 @include('admin.animals.form', ['buttonText' => 'Crear Animal'])
             </form>
         </div>

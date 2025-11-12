@@ -6,6 +6,8 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\SuperAdminController;
 use App\Http\Controllers\SuperAdmin\UserController as SuperAdminUserController;
+use App\Http\Controllers\Public\PublicAnimalController;
+use App\Http\Controllers\Admin\AnimalController;
 
 Route::get('/', function() {
     return view('welcome'); 
@@ -34,6 +36,10 @@ Route::middleware('auth.user')->group(function () {
         Route::resource('shelters', \App\Http\Controllers\Admin\ShelterController::class);
         Route::resource('species', \App\Http\Controllers\Admin\SpeciesController::class);
         Route::resource('breeds', \App\Http\Controllers\Admin\BreedController::class);
+        Route::post('animals/{animal}/photos', [AnimalController::class, 'addPhoto'])->name('animals.photos.store');
+        Route::delete('photos/{photo}', [AnimalController::class, 'deletePhoto'])->name('photos.destroy');
+        Route::post('animals/{animal}/records', [AnimalController::class, 'addMedicalRecord'])->name('animals.records.store');
+        Route::delete('records/{record}', [AnimalController::class, 'deleteMedicalRecord'])->name('records.destroy');
     });
     
     // Rutas solo para Super Admins

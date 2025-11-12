@@ -10,12 +10,13 @@ use Illuminate\Support\Facades\Session;
 class AnimalController extends Controller
 {
     private $apiBaseUrl;
-    private $apiToken;
 
     public function __construct()
     {
+        // Asegúrate de que la URL base apunte al directorio correcto de la API
         $this->apiBaseUrl = env('API_BASE_URL') . '/admin';
     }
+
     private function getApiToken()
     {
         return Session::get('api_token');
@@ -32,10 +33,10 @@ class AnimalController extends Controller
             return back()->with('error', 'No se pudieron cargar los animales desde la API.');
         }
 
-        // La API devuelve un objeto paginado, necesitamos los datos y el paginador
         $apiResponse = $response->json();
-        $animals = $apiResponse['data'];
-        $paginator = $apiResponse; 
+        // Asumiendo que la API devuelve una estructura de paginación de Laravel
+        $animals = $apiResponse['data'] ?? [];
+        $paginator = $apiResponse;
 
         return view('admin.animals.index', compact('animals', 'paginator'));
     }
@@ -45,7 +46,6 @@ class AnimalController extends Controller
      */
     public function create()
     {
-        // Hacemos dos peticiones a la API para poblar los <select> del formulario
         $breedsResponse = Http::withToken($this->getApiToken())->get("{$this->apiBaseUrl}/breeds");
         $sheltersResponse = Http::withToken($this->getApiToken())->get("{$this->apiBaseUrl}/shelters");
 
@@ -60,41 +60,63 @@ class AnimalController extends Controller
     }
 
     /**
-     * Guarda un nuevo animal llamando a la API.
+     * Guarda un nuevo animal y sus datos relacionados (foto, historial) llamando a la API.
      */
     public function store(Request $request)
     {
         $validatedData = $request->validate([
+            // Validaciones del Animal
             'animal_name' => 'required|string|max:255',
             'status' => 'required|string',
             'birth_date' => 'nullable|date',
             'color' => 'required|string|max:50',
-            'is_sterilized' => 'nullable',
+            'is_sterilized' => 'nullable|boolean',
             'description' => 'nullable|string',
             'id_breed' => 'required|integer',
             'id_shelter' => 'required|integer',
             'sex' => 'required|in:Macho,Hembra',
             'age' => 'required|integer|min:0',
             'size' => 'required|in:Pequeño,Mediano,Grande',
+            'main_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'record_event_date' => 'nullable|date|required_with:record_event_type,record_description',
+            'record_event_type' => 'nullable|string|max:255|required_with:record_event_date,record_description',
+            'record_description' => 'nullable|string|required_with:record_event_date,record_event_type',
         ]);
+        $animalData = $request->except(['main_photo', 'record_event_date', 'record_event_type', 'record_description', '_token']);
+        $animalData['is_sterilized'] = $request->has('is_sterilized');
         
-        $validatedData['is_sterilized'] = $request->has('is_sterilized');
+        $response = Http::withToken($this->getApiToken())->post("{$this->apiBaseUrl}/animals", $animalData);
 
-        $response = Http::withToken($this->getApiToken())->post("{$this->apiBaseUrl}/animals", $validatedData);
+        if ($response->failed()) {
+            return back()->withErrors($response->json()['errors'] ?? ['api_error' => 'Error al crear el animal.'])->withInput();
+        }
+        
+        $newAnimal = $response->json();
+        $animalId = $newAnimal['id_animal'];
 
-        if ($response->status() >= 400) {
-            return back()->withErrors($response->json()['errors'] ?? ['api_error' => 'Error al crear el animal en la API.'])->withInput();
+        if ($request->hasFile('main_photo')) {
+            Http::withToken($this->getApiToken())
+                ->attach('photo', file_get_contents($request->file('main_photo')), $request->file('main_photo')->getClientOriginalName())
+                ->post("{$this->apiBaseUrl}/animals/{$animalId}/photos");
+        }
+
+        if ($request->filled(['record_event_date', 'record_event_type', 'record_description'])) {
+            $medicalRecordData = [
+                'event_date' => $request->input('record_event_date'),
+                'event_type' => $request->input('record_event_type'),
+                'description' => $request->input('record_description'),
+            ];
+            Http::withToken($this->getApiToken())->post("{$this->apiBaseUrl}/animals/{$animalId}/medical-records", $medicalRecordData);
         }
 
         return redirect()->route('admin.animals.index')->with('success', 'Animal creado exitosamente.');
     }
-
+    
     /**
      * Muestra el formulario para editar un animal.
      */
     public function edit(string $id)
     {
-        // Hacemos tres peticiones: una por el animal y dos por las dependencias del formulario
         $animalResponse = Http::withToken($this->getApiToken())->get("{$this->apiBaseUrl}/animals/{$id}");
         $breedsResponse = Http::withToken($this->getApiToken())->get("{$this->apiBaseUrl}/breeds");
         $sheltersResponse = Http::withToken($this->getApiToken())->get("{$this->apiBaseUrl}/shelters");
@@ -116,11 +138,12 @@ class AnimalController extends Controller
     public function update(Request $request, string $id)
     {
         $validatedData = $request->validate([
+            // Validaciones del Animal (similares a store)
             'animal_name' => 'required|string|max:255',
             'status' => 'required|string',
             'birth_date' => 'nullable|date',
             'color' => 'required|string|max:50',
-            'is_sterilized' => 'nullable',
+            'is_sterilized' => 'nullable|boolean',
             'description' => 'nullable|string',
             'id_breed' => 'required|integer',
             'id_shelter' => 'required|integer',
@@ -128,12 +151,13 @@ class AnimalController extends Controller
             'age' => 'required|integer|min:0',
             'size' => 'required|in:Pequeño,Mediano,Grande',
         ]);
-
-        $validatedData['is_sterilized'] = $request->has('is_sterilized');
         
-        $response = Http::withToken($this->getApiToken())->put("{$this->apiBaseUrl}/animals/{$id}", $validatedData);
+        $animalData = $validatedData;
+        $animalData['is_sterilized'] = $request->has('is_sterilized');
+        
+        $response = Http::withToken($this->getApiToken())->put("{$this->apiBaseUrl}/animals/{$id}", $animalData);
 
-        if ($response->status() >= 400) {
+        if ($response->failed()) {
             return back()->withErrors($response->json()['errors'] ?? ['api_error' => 'Error al actualizar el animal.'])->withInput();
         }
 
@@ -152,5 +176,69 @@ class AnimalController extends Controller
         }
         
         return redirect()->route('admin.animals.index')->with('success', 'Animal eliminado exitosamente.');
+    }
+
+    /**
+     * Añade una nueva foto a la galería de un animal.
+     */
+    public function addPhoto(Request $request, string $id)
+    {
+        $request->validate(['photo' => 'required|image|max:2048']);
+        
+        $response = Http::withToken($this->getApiToken())
+            ->attach('photo', file_get_contents($request->file('photo')), $request->file('photo')->getClientOriginalName())
+            ->post("{$this->apiBaseUrl}/animals/{$id}/photos");
+
+        if ($response->failed()) {
+            return back()->with('error', 'No se pudo subir la foto.');
+        }
+        return back()->with('success', 'Foto añadida exitosamente.');
+    }
+
+    /**
+     * Elimina una foto de la galería.
+     */
+    public function deletePhoto(string $photoId)
+    {
+        // La ruta a la API para eliminar una foto es independiente del animal
+        $response = Http::withToken($this->getApiToken())->delete(env('API_BASE_URL') . "/admin/photos/{$photoId}");
+        
+        if ($response->failed()) {
+            return back()->with('error', 'No se pudo eliminar la foto.');
+        }
+        return back()->with('success', 'Foto eliminada.');
+    }
+
+    /**
+     * Añade un nuevo registro al historial médico.
+     */
+    public function addMedicalRecord(Request $request, string $id)
+    {
+        $validated = $request->validate([
+            'event_date' => 'required|date',
+            'event_type' => 'required|string',
+            'description' => 'required|string',
+        ]);
+        
+        $response = Http::withToken($this->getApiToken())->post("{$this->apiBaseUrl}/animals/{$id}/medical-records", $validated);
+        
+        if ($response->failed()) {
+            return back()->with('error', 'No se pudo añadir el registro.');
+        }
+        return back()->with('success', 'Registro médico añadido.');
+    }
+
+    /**
+     * Elimina un registro del historial médico.
+     */
+    public function deleteMedicalRecord(string $recordId)
+    {
+        // La ruta a la API para eliminar un registro es independiente del animal
+        $response = Http::withToken($this->getApiToken())->delete(env('API_BASE_URL') . "/admin/medical-records/{$recordId}");
+
+        if ($response->failed()) {
+            return back()->with('error', 'No se pudo eliminar el registro.');
+        }
+        return back()->with('success', 'Registro médico eliminado.');
     }
 }
