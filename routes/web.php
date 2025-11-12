@@ -43,6 +43,7 @@ Route::middleware('auth.user')->group(function () {
         Route::post('animals/{animal}/photos', [AnimalController::class, 'addPhoto'])->name('animals.photos.store');
         Route::delete('photos/{photo}', [AnimalController::class, 'deletePhoto'])->name('photos.destroy');
         Route::post('animals/{animal}/records', [AnimalController::class, 'addMedicalRecord'])->name('animals.records.store');
+        Route::put('records/{record}', [AnimalController::class, 'updateMedicalRecord'])->name('records.update');
         Route::delete('records/{record}', [AnimalController::class, 'deleteMedicalRecord'])->name('records.destroy');
     });
     

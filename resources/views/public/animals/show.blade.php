@@ -68,7 +68,7 @@
         <div class="col-12">
             <h3>Historial Médico</h3>
             <div class="accordion" id="medicalHistory">
-                @forelse($animal['medicalRecords'] as $index => $record)
+                @forelse($animal['medical_records'] as $index => $record)
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="heading{{ $index }}">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ $index }}" aria-expanded="false" aria-controls="collapse{{ $index }}">

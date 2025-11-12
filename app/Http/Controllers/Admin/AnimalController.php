@@ -65,7 +65,6 @@ class AnimalController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            // Validaciones del Animal
             'animal_name' => 'required|string|max:255',
             'status' => 'required|string',
             'birth_date' => 'nullable|date',
@@ -95,22 +94,27 @@ class AnimalController extends Controller
         $animalId = $newAnimal['id_animal'];
 
         if ($request->hasFile('main_photo')) {
-            Http::withToken($this->getApiToken())
-                ->attach('photo', file_get_contents($request->file('main_photo')), $request->file('main_photo')->getClientOriginalName())
-                ->post("{$this->apiBaseUrl}/animals/{$animalId}/photos");
+        $photoResponse = Http::withToken($this->getApiToken())
+            ->attach('photo', file_get_contents($request->file('main_photo')), $request->file('main_photo')->getClientOriginalName())
+            ->post("{$this->apiBaseUrl}/animals/{$animalId}/photos");
+        if ($photoResponse->failed()) {
+            Http::withToken($this->getApiToken())->delete("{$this->apiBaseUrl}/animals/{$animalId}");
+            return back()->with('error', 'El animal se creó, pero la foto no pudo subirse. Por favor, edita el registro para añadirla.')->withInput();
         }
-
-        if ($request->filled(['record_event_date', 'record_event_type', 'record_description'])) {
-            $medicalRecordData = [
-                'event_date' => $request->input('record_event_date'),
-                'event_type' => $request->input('record_event_type'),
-                'description' => $request->input('record_description'),
-            ];
-            Http::withToken($this->getApiToken())->post("{$this->apiBaseUrl}/animals/{$animalId}/medical-records", $medicalRecordData);
-        }
-
-        return redirect()->route('admin.animals.index')->with('success', 'Animal creado exitosamente.');
     }
+    if ($request->filled(['record_event_date', 'record_event_type', 'record_description'])) {
+        $medicalRecordData = [
+            'event_date' => $request->input('record_event_date'),
+            'event_type' => $request->input('record_event_type'),
+            'description' => $request->input('record_description'),
+        ];
+        $recordResponse = Http::withToken($this->getApiToken())->post("{$this->apiBaseUrl}/animals/{$animalId}/medical-records", $medicalRecordData);
+        if ($recordResponse->failed()) {
+            return back()->with('error', 'El animal se creó, pero su historial médico no pudo guardarse. Por favor, edita el registro para añadirlo.')->withInput();
+        }
+    }
+    return redirect()->route('admin.animals.index')->with('success', 'Animal creado exitosamente con toda su información.');
+}
     
     /**
      * Muestra el formulario para editar un animal.
@@ -240,5 +244,25 @@ class AnimalController extends Controller
             return back()->with('error', 'No se pudo eliminar el registro.');
         }
         return back()->with('success', 'Registro médico eliminado.');
+    }
+    /**
+     * Actualiza un registro del historial médico.
+     */
+    public function updateMedicalRecord(Request $request, string $recordId)
+    {
+        $validated = $request->validate([
+            'event_date' => 'required|date',
+            'event_type' => 'required|string',
+            'description' => 'required|string',
+        ]);
+
+        $response = Http::withToken($this->getApiToken())
+            ->put(env('API_BASE_URL') . "/admin/medical-records/{$recordId}", $validated);
+
+        if ($response->failed()) {
+            return back()->with('error', 'No se pudo actualizar el registro médico.');
+        }
+
+        return back()->with('success', 'Registro médico actualizado exitosamente.');
     }
 }
