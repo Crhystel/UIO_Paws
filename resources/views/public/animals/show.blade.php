@@ -1,4 +1,4 @@
-@extends('layouts.app') {{-- O tu layout público principal --}}
+@extends('layouts.app') 
 
 @section('title', 'Conoce a ' . $animal['animal_name'])
 

@@ -19,6 +19,10 @@ Route::post('/login', [AuthController::class, 'login'])->name('login.submit')->m
 Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register.form')->middleware('guest');
 Route::post('/register', [AuthController::class, 'register'])->name('register.submit')->middleware('guest');
 
+//Rutas publicas para ver animales
+Route::get('/animales', [PublicAnimalController::class, 'index'])->name('public.animals.index');
+Route::get('/animales/{id}', [PublicAnimalController::class, 'show'])->name('public.animals.show');
+
 
 Route::middleware('auth.user')->group(function () {
     

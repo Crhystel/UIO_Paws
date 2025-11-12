@@ -7,7 +7,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto align-items-center">
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Ver Animales</a>
+                    <a class="nav-link {{ request()->routeIs('public.animals.index') ? 'active fw-bold' : '' }}" href="{{ route('public.animals.index') }}">Ver Animales</a>
                 </li>
                 @if(Session::has('api_token'))
                     {{-- Si el usuario está logueado --}}
