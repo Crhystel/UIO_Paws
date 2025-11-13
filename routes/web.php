@@ -9,6 +9,7 @@ use App\Http\Controllers\SuperAdmin\UserController as SuperAdminUserController;
 use App\Http\Controllers\Public\PublicAnimalController;
 use App\Http\Controllers\Admin\AnimalController;
 use App\Http\Controllers\Public\PublicDonationController;
+use App\Http\Controllers\Public\PublicVolunteerController;
 
 Route::get('/', function() {
     return view('welcome'); 
@@ -26,6 +27,8 @@ Route::get('/animales/{id}', [PublicAnimalController::class, 'show'])->name('pub
 
 //Rutas publcias para ver items de donaciones
 Route::get('/donaciones', [PublicDonationController::class, 'index'])->name('public.donations.index');
+//Rutas publicas para ver oportunidades de voluntariado
+Route::get('/voluntariado', [PublicVolunteerController::class, 'index'])->name('public.volunteer.index');
 
 
 Route::middleware('auth.user')->group(function () {
@@ -50,6 +53,8 @@ Route::middleware('auth.user')->group(function () {
         Route::delete('records/{record}', [AnimalController::class, 'deleteMedicalRecord'])->name('records.destroy');
         Route::resource('donation-items', \App\Http\Controllers\Admin\DonationItemsCatalogController::class)
         ->parameters(['donation-items' => 'item']);
+        Route::resource('volunteer-opportunities', \App\Http\Controllers\Admin\VolunteerOpportunityController::class)
+        ->parameters(['volunteer-opportunities' => 'opportunity']);
     });
     // Rutas solo para Super Admins
     Route::middleware('is.superadmin')->prefix('superadmin')->name('superadmin.')->group(function () {

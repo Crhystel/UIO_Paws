@@ -56,6 +56,15 @@
         <div class="col-md-4">
             <div class="card text-center h-100">
                 <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Gestionar Voluntariado</h5>
+                    <p class="card-text">Crear y editar las oportunidades de voluntariado.</p>
+                    <a href="{{ route('admin.volunteer-opportunities.index') }}" class="btn btn-primary mt-auto">Ir a Voluntariado</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center h-100">
+                <div class="card-body d-flex flex-column">
                     <h5 class="card-title">Revisar Solicitudes</h5>
                     <p class="card-text">Ver solicitudes de adopción y voluntariado.</p>
                     <a href="#" class="btn btn-primary mt-auto">Ir a Solicitudes</a>
