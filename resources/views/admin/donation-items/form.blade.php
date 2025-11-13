@@ -20,7 +20,7 @@
 </div> 
 
 <div class="mb-3">
-    <label for="description" class="form-label">Descripción (Opcional)</label>
+    <label for="description" class="form-label">Descripción</label>
     <textarea class="form-control" id="description" name="description" rows="4">{{ old('description', $item['description'] ?? '') }}</textarea>
 </div>
 
