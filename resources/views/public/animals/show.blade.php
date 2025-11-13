@@ -9,7 +9,7 @@
         <div class="col-md-7">
             {{-- Foto Principal --}}
             @if(isset($animal['photos']) && count($animal['photos']) > 0)
-                <img src="{{ asset('storage/' . $animal['photos'][0]['image_url']) }}" class="img-fluid rounded mb-3" alt="Foto principal de {{ $animal['animal_name'] }}">
+                <img src="{{ env('API_URL') . $animal['photos'][0]['full_image_url'] }}" class="img-fluid rounded mb-3" alt="Foto principal de {{ $animal['animal_name'] }}">
                 
                 {{-- Galería de fotos adicionales --}}
                 @if(count($animal['photos']) > 1)
