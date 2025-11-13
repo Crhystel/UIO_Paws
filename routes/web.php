@@ -8,6 +8,7 @@ use App\Http\Controllers\SuperAdminController;
 use App\Http\Controllers\SuperAdmin\UserController as SuperAdminUserController;
 use App\Http\Controllers\Public\PublicAnimalController;
 use App\Http\Controllers\Admin\AnimalController;
+use App\Http\Controllers\Public\PublicDonationController;
 
 Route::get('/', function() {
     return view('welcome'); 
@@ -22,6 +23,9 @@ Route::post('/register', [AuthController::class, 'register'])->name('register.su
 //Rutas publicas para ver animales
 Route::get('/animales', [PublicAnimalController::class, 'index'])->name('public.animals.index');
 Route::get('/animales/{id}', [PublicAnimalController::class, 'show'])->name('public.animals.show');
+
+//Rutas publcias para ver items de donaciones
+Route::get('/donaciones', [PublicDonationController::class, 'index'])->name('public.donations.index');
 
 
 Route::middleware('auth.user')->group(function () {

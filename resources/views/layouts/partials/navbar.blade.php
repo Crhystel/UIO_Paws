@@ -9,6 +9,9 @@
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('public.animals.index') ? 'active fw-bold' : '' }}" href="{{ route('public.animals.index') }}">Ver Animales</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('public.donations.index') ? 'active fw-bold' : '' }}" href="{{ route('public.donations.index') }}">Qué Donar</a>
+                </li>
                 @if(Session::has('api_token'))
                     {{-- Si el usuario está logueado --}}
                     <li class="nav-item dropdown">
