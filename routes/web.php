@@ -33,24 +33,20 @@ Route::middleware('auth.user')->group(function () {
     
     // Rutas para Admins (y Super Admins, ya que 'is.admin' debería incluirlos)
     Route::middleware('is.admin')->prefix('admin')->name('admin.')->group(function () {
-    
-    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
-    
-    // --- RECURSOS ---
-    Route::resource('animals', \App\Http\Controllers\Admin\AnimalController::class);
-    Route::resource('shelters', \App\Http\Controllers\Admin\ShelterController::class);
-    Route::resource('species', \App\Http\Controllers\Admin\SpeciesController::class);
-    Route::resource('breeds', \App\Http\Controllers\Admin\BreedController::class);
-    // La URL será /admin/animals/{animal}/photos
-    Route::post('animals/{animal}/photos', [AnimalController::class, 'addPhoto'])->name('animals.photos.store');
-    // La URL será /admin/photos/{photo}
-    Route::delete('photos/{photo}', [AnimalController::class, 'deletePhoto'])->name('photos.destroy');
-    // La URL será /admin/animals/{animal}/records
-    Route::post('animals/{animal}/records', [AnimalController::class, 'addMedicalRecord'])->name('animals.records.store');
-    // La URL será /admin/records/{record}
-    Route::put('records/{record}', [AnimalController::class, 'updateMedicalRecord'])->name('records.update');
-    Route::delete('records/{record}', [AnimalController::class, 'deleteMedicalRecord'])->name('records.destroy');
-});
+        
+        Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+        Route::resource('animals', \App\Http\Controllers\Admin\AnimalController::class);
+        Route::resource('shelters', \App\Http\Controllers\Admin\ShelterController::class);
+        Route::resource('species', \App\Http\Controllers\Admin\SpeciesController::class);
+        Route::resource('breeds', \App\Http\Controllers\Admin\BreedController::class);
+        Route::post('animals/{animal}/photos', [AnimalController::class, 'addPhoto'])->name('animals.photos.store');
+        Route::delete('photos/{photo}', [AnimalController::class, 'deletePhoto'])->name('photos.destroy');
+        Route::post('animals/{animal}/records', [AnimalController::class, 'addMedicalRecord'])->name('animals.records.store');
+        Route::put('records/{record}', [AnimalController::class, 'updateMedicalRecord'])->name('records.update');
+        Route::delete('records/{record}', [AnimalController::class, 'deleteMedicalRecord'])->name('records.destroy');
+        Route::resource('donation-items', \App\Http\Controllers\Admin\DonationItemsCatalogController::class)
+        ->parameters(['donation-items' => 'item']);
+    });
     // Rutas solo para Super Admins
     Route::middleware('is.superadmin')->prefix('superadmin')->name('superadmin.')->group(function () {
         Route::get('/dashboard', [SuperAdminController::class, 'dashboard'])->name('dashboard');

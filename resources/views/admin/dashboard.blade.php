@@ -44,7 +44,15 @@
                 </div>
             </div>
         </div>
-
+        <div class="col-md-4">
+            <div class="card text-center h-100">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Catálogo de Donaciones</h5>
+                    <p class="card-text">Administrar los artículos que se pueden donar.</p>
+                    <a href="{{ route('admin.donation-items.index') }}" class="btn btn-primary mt-auto">Ir al Catálogo</a>
+                </div>
+            </div>
+        </div>
         <div class="col-md-4">
             <div class="card text-center h-100">
                 <div class="card-body d-flex flex-column">
