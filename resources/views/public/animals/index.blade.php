@@ -22,7 +22,7 @@
                     <div class="card h-100 shadow-sm animal-card">
                         <a href="{{ route('public.animals.show', $animal['id_animal']) }}" class="animal-card-image-container">
                             @if(!empty($animal['photos']))
-                                <img src="{{ env('API_URL') . $animal['photos'][0]['full_image_url'] }}" 
+                                <img src="{{ config('app.api_url') . $animal['photos'][0]['full_image_url'] }}" 
                                      class="card-img-top" 
                                      alt="Foto de {{ $animal['animal_name'] }}"
                                      loading="lazy">
