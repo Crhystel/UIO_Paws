@@ -10,6 +10,8 @@ use App\Http\Controllers\Public\PublicAnimalController;
 use App\Http\Controllers\Admin\AnimalController;
 use App\Http\Controllers\Public\PublicDonationController;
 use App\Http\Controllers\Public\PublicVolunteerController;
+use App\Http\Controllers\User\AdoptionController;
+use App\Http\Controllers\Admin\Adoption\AdoptionApplicationController;
 
 Route::get('/', function() {
     return view('welcome'); 
@@ -61,6 +63,11 @@ Route::middleware('auth.user')->group(function () {
         ->parameters(['donation-items' => 'item']);
         Route::resource('volunteer-opportunities', \App\Http\Controllers\Admin\VolunteerOpportunityController::class)
         ->parameters(['volunteer-opportunities' => 'opportunity']);
+        Route::prefix('applications/adoption')->name('applications.adoption.')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Admin\AdoptionApplicationController::class, 'index'])->name('index');
+            Route::get('/{application}', [\App\Http\Controllers\Admin\AdoptionApplicationController::class, 'show'])->name('show');
+            Route::post('/{application}/status', [\App\Http\Controllers\Admin\Adoption\AdoptionApplicationController::class, 'updateStatus'])->name('updateStatus');
+        });
         
     });
     // Rutas solo para Super Admins
