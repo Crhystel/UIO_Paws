@@ -10,13 +10,17 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
-    ->withMiddleware(function (Middleware $middleware){
+    ->withMiddleware(function (Middleware $middleware) {
+        $middleware->web(append: [
+            \App\Http\Middleware\SetAuthStatusFromSession::class,
+        ]);
         $middleware->alias([
             'auth.user' => \App\Http\Middleware\AuthUserMiddleware::class,
             'is.admin' => \App\Http\Middleware\IsAdminMiddleware::class,
             'is.superadmin' => \App\Http\Middleware\IsSuperAdminMiddleware::class,
-            'guest' => \Illuminate\Auth\Middleware\RedirectIfAuthenticated::class,
+            'guest' => \Illuminate\Auth\Middleware\RedirectIfAuthenticated::class, 
         ]);
+
          $middleware->trustProxies('*');
     })
     ->withExceptions(function (Exceptions $exceptions): void {

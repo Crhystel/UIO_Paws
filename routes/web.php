@@ -32,6 +32,18 @@ Route::get('/donaciones', [PublicDonationController::class, 'index'])->name('pub
 //Rutas publicas para ver oportunidades de voluntariado
 Route::get('/voluntariado', [PublicVolunteerController::class, 'index'])->name('public.volunteer.index');
 
+Route::get('/login-para-adoptar/{animal}', [AuthController::class, 'redirectToLoginForAdoption'])->name('login.for.adoption')->middleware('guest');
+
+// Rutas para usuarios autenticados
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login')->middleware('guest');
+Route::post('/login', [AuthController::class, 'login'])->name('login.submit')->middleware('guest');
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
+    Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register.form');
+    Route::post('/register', [AuthController::class, 'register'])->name('register.submit');
+    Route::get('/iniciar-adopcion/{animal}', [AuthController::class, 'startAdoptionProcess'])->name('adoption.start');
+});
 
 Route::middleware('auth.user')->group(function () {
     

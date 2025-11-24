@@ -19,7 +19,7 @@ class AuthController extends Controller
         return view('auth.register');
     }
 
-     public function register(Request $request)
+    public function register(Request $request)
     {
         $validated = $request->validate([
             'first_name' => 'required|string|max:255',
@@ -32,12 +32,34 @@ class AuthController extends Controller
             'email' => 'required|string|email|max:255',
             'password' => 'required|string|min:8|confirmed',
         ]);
-        $response = Http::post(env('API_BASE_URL') . '/register', $validated);
+        $registerResponse = Http::post(env('API_BASE_URL') . '/register', $validated);
 
-        if ($response->successful()) {
-            return redirect()->route('login')->with('success', '¡Registro exitoso! Por favor, inicia sesión.');
+        if ($registerResponse->failed()) {
+            return back()->withErrors($registerResponse->json('errors'))->withInput();
         }
-        return back()->withErrors($response->json('errors'))->withInput();
+        $loginResponse = Http::post(env('API_BASE_URL') . '/login', [
+            'email' => $request->email,
+            'password' => $request->password,
+        ]);
+        if ($loginResponse->failed()) {
+            return redirect()->route('login')->with('success', '¡Registro exitoso! Por favor, inicia sesión para continuar.');
+        }
+
+        if ($loginResponse->failed()) {
+            return redirect()->route('login')->with('success', '¡Registro exitoso! Por favor, inicia sesión para continuar.');
+        }
+        $data = $loginResponse->json();
+        Session::put('api_token', $data['access_token']);
+        Session::put('user_role', $data['user_role']);
+
+        $profileResponse = Http::withToken($data['access_token'])->get(env('API_BASE_URL') . '/profile');
+        if($profileResponse->successful()){
+            Session::put('user_name', $profileResponse->json()['first_name']);
+        } else {
+            Session::put('user_name', 'Usuario');
+        }
+        return redirect()->intended(route('dashboard'))
+                         ->with('success', '¡Registro completado! Ahora puedes llenar tu solicitud.');
     }
 
     public function login(Request $request)
@@ -83,5 +105,16 @@ class AuthController extends Controller
         Session::flush();
         
         return redirect()->route('home');
+    }
+    public function redirectToLoginForAdoption($animalId)
+    {
+        $intendedUrl = route('adoption.form', $animalId);
+        session(['url.intended' => $intendedUrl]);
+        return redirect()->route('login');
+    }
+    public function startAdoptionProcess($animalId)
+    {
+        session(['url.intended' => route('adoption.form', $animalId)]);
+        return redirect()->route('register.form');
     }
 }
