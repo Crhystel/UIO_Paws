@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Admin\Adoption;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -63,7 +63,7 @@ class AdoptionApplicationController extends Controller
     public function updateStatus(Request $request, string $applicationId)
     {
         $validated = $request->validate([
-            'id_status' => 'required|integer|exists:application_statuses,id_status',
+            'id_status' => 'required|integer',
             'admin_notes' => 'nullable|string|max:2000',
         ]);
 

@@ -1,4 +1,4 @@
-@extends('layouts.admin') {{-- O el layout de tu panel de admin --}}
+@extends('layouts.app')
 
 @section('title', 'Solicitudes de Adopción')
 

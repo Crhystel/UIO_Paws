@@ -76,8 +76,8 @@ Route::middleware('auth.user')->group(function () {
         Route::resource('volunteer-opportunities', \App\Http\Controllers\Admin\VolunteerOpportunityController::class)
         ->parameters(['volunteer-opportunities' => 'opportunity']);
         Route::prefix('applications/adoption')->name('applications.adoption.')->group(function () {
-            Route::get('/', [\App\Http\Controllers\Admin\AdoptionApplicationController::class, 'index'])->name('index');
-            Route::get('/{application}', [\App\Http\Controllers\Admin\AdoptionApplicationController::class, 'show'])->name('show');
+            Route::get('/', [\App\Http\Controllers\Admin\Adoption\AdoptionApplicationController::class, 'index'])->name('index');
+            Route::get('/{application}', [\App\Http\Controllers\Admin\Adoption\AdoptionApplicationController::class, 'show'])->name('show');
             Route::post('/{application}/status', [\App\Http\Controllers\Admin\Adoption\AdoptionApplicationController::class, 'updateStatus'])->name('updateStatus');
         });
         

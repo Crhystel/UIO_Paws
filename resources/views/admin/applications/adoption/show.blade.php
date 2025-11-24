@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.app') 
 
 @section('title', 'Revisar Solicitud de Adopción')
 
@@ -19,7 +19,7 @@
                 <div class="card-header">Información del Animalito</div>
                 <div class="card-body">
                     <h4>{{ $application['animal']['animal_name'] }}</h4>
-                    <p><strong>Raza:</strong> {{ $application['animal']['breed']['breed_name'] }}</p>
+                    <p><strong>Raza:</strong> {{ $application['animal']['breed']['breed_name'] ?? 'No especificada' }}</p>
                     <p><strong>Edad:</strong> {{ $application['animal']['age'] }} años</p>
                     <p><strong>Sexo:</strong> {{ $application['animal']['sex'] }}</p>
                 </div>
@@ -40,15 +40,45 @@
             <div class="card mb-4">
                 <div class="card-header">Cuestionario de Adopción</div>
                 <div class="card-body">
+                    @php
+                        $translations = [
+                            'dwelling_type' => 'Tipo de Vivienda',
+                            'has_yard' => 'Tiene Patio',
+                            'yard_enclosure_type' => 'Tipo de Cerramiento del Patio',
+                            'wall_material' => 'Material de las Paredes',
+                            'floor_material' => 'Material del Piso',
+                            'room_count' => 'Número de Habitaciones',
+                            'bathroom_count' => 'Número de Baños',
+                            'adults_in_home' => 'Adultos en el Hogar',
+                            'has_balcony' => 'Tiene Balcón',
+                            'current_pet_count' => 'Número de Mascotas Actuales',
+                            'others_pets_description' => 'Descripción de Otras Mascotas',
+                            'all_members_agree' => '¿Todos los Miembros de Acuerdo?',
+                            'previous_pets_history' => 'Historial de Mascotas Anteriores',
+                            'motivation_for_adoption' => 'Motivación para Adoptar',
+                            'hours_pet_will_be_alone' => 'Horas que la Mascota Estará Sola',
+                            'location_when_alone' => 'Lugar Donde Estará Sola',
+                            'exercise_plan' => 'Plan de Ejercicio',
+                            'vacation_emergency_plan' => 'Plan para Vacaciones/Emergencias',
+                            'behavioral_issue_plan' => 'Plan para Problemas de Comportamiento',
+                            'vet_reference_name' => 'Veterinario de Referencia (Nombre)',
+                            'vet_reference_phone' => 'Veterinario de Referencia (Teléfono)'
+                        ];
+                    @endphp
+                    {{-- FIN DE LA MODIFICACIÓN --}}
+
                     <dl class="row">
                         @foreach($application['home_information'] as $key => $value)
                             @if($key !== 'id_home_info' && $key !== 'id_adoption_application')
-                                <dt class="col-sm-5">{{ ucwords(str_replace('_', ' ', $key)) }}</dt>
+                                {{-- MODIFICACIÓN: Usamos el diccionario para traducir la etiqueta --}}
+                                <dt class="col-sm-5">{{ $translations[$key] ?? ucwords(str_replace('_', ' ', $key)) }}</dt>
                                 <dd class="col-sm-7">
                                     @if(is_bool($value))
                                         {{ $value ? 'Sí' : 'No' }}
+                                    @elseif($value === null || $value === '')
+                                        <span class="text-muted">No especificado</span>
                                     @else
-                                        {{ $value ?? 'No especificado' }}
+                                        {{ $value }}
                                     @endif
                                 </dd>
                             @endif
@@ -66,7 +96,12 @@
                 </div>
                 <div class="card-body">
                     <p><strong>Estado Actual:</strong> 
-                        <span class="badge bg-warning text-dark fs-6">{{ $application['status']['status_name'] }}</span>
+                        <span class="badge 
+                            @if($application['status']['status_name'] == 'Aprobado') bg-success
+                            @elseif($application['status']['status_name'] == 'Rechazado') bg-danger
+                            @else bg-warning text-dark @endif fs-6">
+                            {{ $application['status']['status_name'] }}
+                        </span>
                     </p>
                     <hr>
                     <form action="{{ route('admin.applications.adoption.updateStatus', $application['id_adoption_application']) }}" method="POST">
