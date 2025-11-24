@@ -56,7 +56,22 @@
                     </ul>
 
                     @if($animal['status'] == 'Disponible')
-                        <a href="#" class="btn btn-primary mt-3 w-100">¡Adóptame!</a>
+                        @auth
+                            {{-- Si el usuario está logueado, lo llevamos directo al formulario --}}
+                            <a href="{{ route('adoption.form', $animal['id_animal']) }}" class="btn btn-primary btn-lg mt-3 w-100">
+                                <i class="fas fa-heart"></i> ¡Adóptame!
+                            </a>
+                        @endauth
+
+                        @guest
+                            {{-- Si es un visitante, lo mandamos a registrarse/loguearse --}}
+                            <a href="{{ route('register.form') }}" class="btn btn-info btn-lg mt-3 w-100">
+                                Inicia sesión o regístrate para adoptar
+                            </a>
+                            <div class="form-text text-center mt-2">
+                                ¡Necesitas una cuenta para poder darle un hogar a {{ $animal['animal_name'] }}!
+                            </div>
+                        @endguest
                     @endif
                 </div>
             </div>

@@ -37,6 +37,12 @@ Route::middleware('auth.user')->group(function () {
 
     // Dashboard para rol 'User'
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    //rutas para adopcion de animales
+    Route::namespace('App\Http\Controllers\User')->name('adoption.')->group(function () {
+        Route::get('/adoptar/{animal}', 'AdoptionController@showForm')->name('form');
+        Route::post('/adoptar/{animal}', 'AdoptionController@submitForm')->name('submit');
+        Route::get('/mis-solicitudes', 'AdoptionController@myApplications')->name('my-applications');
+    });
     
     // Rutas para Admins (y Super Admins, ya que 'is.admin' debería incluirlos)
     Route::middleware('is.admin')->prefix('admin')->name('admin.')->group(function () {
@@ -55,6 +61,7 @@ Route::middleware('auth.user')->group(function () {
         ->parameters(['donation-items' => 'item']);
         Route::resource('volunteer-opportunities', \App\Http\Controllers\Admin\VolunteerOpportunityController::class)
         ->parameters(['volunteer-opportunities' => 'opportunity']);
+        
     });
     // Rutas solo para Super Admins
     Route::middleware('is.superadmin')->prefix('superadmin')->name('superadmin.')->group(function () {
