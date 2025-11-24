@@ -18,7 +18,7 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table">
+                <table class="table table-hover">
                     <thead>
                         <tr>
                             <th>Fecha</th>
@@ -40,6 +40,16 @@
                                     </span>
                                 </td>
                             </tr>
+                            
+                            @if(!empty($app['admin_notes']))
+                            <tr class="table-light">
+                                <td colspan="3">
+                                    <small class="text-muted"><strong>Notas del administrador:</strong></small><br>
+                                    <p class="mb-0" style="white-space: pre-wrap;">{{ $app['admin_notes'] }}</p>
+                                </td>
+                            </tr>
+                            @endif
+
                         @empty
                             <tr>
                                 <td colspan="3" class="text-center">Aún no has enviado ninguna solicitud de adopción.</td>
@@ -56,7 +66,6 @@
         </div>
     </div>
     
-    {{-- Aquí puedes añadir la tabla para las solicitudes de voluntariado de la misma manera --}}
 
 </div>
 @endsection
