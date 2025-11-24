@@ -171,6 +171,15 @@
                         <input type="text" class="form-control" id="vet_reference_phone" name="home_info[vet_reference_phone]" value="{{ old('home_info.vet_reference_phone') }}">
                     </div>
                 </div>
+                <div class="form-check mb-3">
+                    <input class="form-check-input @error('terms_accepted') is-invalid @enderror" type="checkbox" name="terms_accepted" id="terms_accepted" required>
+                    <label class="form-check-label" for="terms_accepted">
+                        He leído y acepto los <a href="/terms-and-conditions" target="_blank">Términos y Condiciones</a> de la adopción.
+                    </label>
+                    @error('terms_accepted')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
 
                 <hr class="mt-4">
                 <div class="alert alert-light" role="alert">

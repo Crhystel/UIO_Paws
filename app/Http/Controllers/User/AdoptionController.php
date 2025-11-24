@@ -63,10 +63,12 @@ class AdoptionController extends Controller
             'home_info.behavioral_issue_plan' => 'required|string',
             'home_info.vet_reference_name' => 'nullable|string|max:255',
             'home_info.vet_reference_phone' => 'nullable|string|max:20',
+            'terms_accepted' => 'required',
         ]);
         $payload = [
             'id_animal' => $animalId,
-            'home_info' => $validated['home_info']
+            'home_info' => $validated['home_info'],
+            'terms_accepted' => $request->has('terms_accepted') 
         ];
         $response = Http::withToken($this->getApiToken())
             ->post("{$this->apiBaseUrl}/user/adoption-applications", $payload);

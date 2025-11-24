@@ -12,7 +12,7 @@
                 <div class="card-body">
                     <h5 class="card-title">Mis Solicitudes</h5>
                     <p class="card-text">Revisa el estado de todas las solicitudes que has enviado.</p>
-                    <a href="#" class="btn btn-primary">Ver mis solicitudes</a>
+                    <a href="{{ route('adoption.my-applications') }}" class="btn btn-primary">Ver mis solicitudes</a>
                 </div>
             </div>
         </div>
