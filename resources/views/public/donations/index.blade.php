@@ -25,8 +25,7 @@
                         <p class="card-text text-secondary">
                             {{ $item['description'] ?? 'Cada aporte, por pequeño que sea, hace una gran diferencia.' }}
                         </p>
-                        {{-- Más adelante, este botón puede llevar a un formulario de donación --}}
-                        <a href="{{ route('register.form') }}" class="btn btn-outline-primary mt-auto">Quiero Donar Esto</a>
+                        <a href="{{ route('user.donations.create') }}" class="btn btn-outline-primary mt-auto">Quiero Donar</a>
                     </div>
                 </div>
             </div>

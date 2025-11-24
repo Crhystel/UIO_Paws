@@ -67,7 +67,7 @@
                 <div class="card-body d-flex flex-column">
                     <h5 class="card-title">Revisar Solicitudes</h5>
                     <p class="card-text">Ver solicitudes de adopción y voluntariado.</p>
-                    <a href="{{ route('admin.applications.adoption.index') }}" class="btn btn-warning mt-auto">Revisar Adopciones</a>
+                    <a href="{{ route('admin.applications.index') }}" class="btn btn-warning mt-auto">Revisar Solicitudes</a>
                 </div>
             </div>
         </div>

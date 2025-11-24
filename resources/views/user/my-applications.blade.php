@@ -65,7 +65,44 @@
             @endif
         </div>
     </div>
-    
-
+    {{-- Solicitudes de Donacion --}}
+    <div class="card mt-4">
+        <div class="card-header">
+            <h3>Donaciones</h3>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Fecha de Solicitud</th>
+                            <th>Estado</th>
+                            <th>Notas del Admin</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($donation_applications as $app)
+                            <tr>
+                                <td>{{ \Carbon\Carbon::parse($app['application_date'])->format('d/m/Y') }}</td>
+                                <td>
+                                    <span class="badge 
+                                        @if($app['status']['status_name'] == 'Aprobado') bg-success 
+                                        @elseif($app['status']['status_name'] == 'Rechazado') bg-danger
+                                        @else bg-warning text-dark @endif">
+                                        {{ $app['status']['status_name'] }}
+                                    </span>
+                                </td>
+                                <td>{{ $app['admin_notes'] ?? 'Sin notas' }}</td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="3" class="text-center">Aún no has ofrecido ninguna donación.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 @endsection

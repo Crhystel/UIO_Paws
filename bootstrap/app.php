@@ -19,6 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'is.admin' => \App\Http\Middleware\IsAdminMiddleware::class,
             'is.superadmin' => \App\Http\Middleware\IsSuperAdminMiddleware::class,
             'guest' => \Illuminate\Auth\Middleware\RedirectIfAuthenticated::class, 
+            'role.user.only' => \App\Http\Middleware\RoleUserOnly::class,
         ]);
 
          $middleware->trustProxies('*');
