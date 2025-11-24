@@ -12,6 +12,7 @@ use App\Http\Controllers\Public\PublicDonationController;
 use App\Http\Controllers\Public\PublicVolunteerController;
 use App\Http\Controllers\User\AdoptionController;
 use App\Http\Controllers\Admin\Adoption\AdoptionApplicationController;
+use App\Http\Controllers\User\ProfileController;
 
 Route::get('/', function() {
     return view('welcome'); 
@@ -56,6 +57,11 @@ Route::middleware('auth.user')->group(function () {
         Route::get('/adoptar/{animal}', 'AdoptionController@showForm')->name('form');
         Route::post('/adoptar/{animal}', 'AdoptionController@submitForm')->name('submit');
         Route::get('/mis-solicitudes', 'AdoptionController@myApplications')->name('my-applications');
+    });
+    Route::prefix('profile')->name('user.')->group(function () {
+        Route::get('/', [ProfileController::class, 'show'])->name('profile.show');
+        Route::post('/emergency-contacts', [ProfileController::class, 'storeEmergencyContact'])->name('contacts.store');
+        Route::delete('/emergency-contacts/{contact}', [ProfileController::class, 'destroyEmergencyContact'])->name('contacts.destroy');
     });
     
     // Rutas para Admins (y Super Admins, ya que 'is.admin' debería incluirlos)

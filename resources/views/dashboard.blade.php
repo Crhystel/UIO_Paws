@@ -21,7 +21,7 @@
                 <div class="card-body">
                     <h5 class="card-title">Mi Perfil</h5>
                     <p class="card-text">Actualiza tu información de contacto y detalles personales.</p>
-                    <a href="#" class="btn btn-secondary">Editar perfil</a>
+                    <a href="{{ route('user.profile.show') }}" class="btn btn-secondary">Editar perfil</a>
                 </div>
             </div>
         </div>
