@@ -106,6 +106,7 @@
                     <hr>
                     <form action="{{ route('admin.applications.adoption.updateStatus', $application['id_adoption_application']) }}" method="POST">
                         @csrf
+                        @method('PUT')
                         <div class="mb-3">
                             <label for="id_status" class="form-label"><strong>Cambiar Estado a:</strong></label>
                             <select name="id_status" id="id_status" class="form-select" required>
