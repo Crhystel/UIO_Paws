@@ -15,27 +15,41 @@ class PublicAnimalController extends Controller
         $this->apiBaseUrl = env('API_BASE_URL') . '/public';
     }
 
-    /**
-     * Muestra una galería pública de todos los animales disponibles.
-     */
-    public function index()
+    public function index(Request $request)
     {
-        $response = Http::get("{$this->apiBaseUrl}/animals");
+        $speciesResponse = Http::get("{$this->apiBaseUrl}/species");
+        $breedsResponse = Http::get("{$this->apiBaseUrl}/breeds");
+        $sheltersResponse = Http::get("{$this->apiBaseUrl}/shelters");
 
-        if ($response->failed()) {
-            return view('public.animals.index', ['animals' => [], 'paginator' => null])
-                   ->with('error', 'No se pudieron cargar los animalitos en este momento.');
-        }
+        $species = $speciesResponse->successful() ? $speciesResponse->json() : [];
+        $breeds = $breedsResponse->successful() ? $breedsResponse->json() : [];
+        $shelters = $sheltersResponse->successful() ? $sheltersResponse->json() : [];
+        $queryParams = array_filter([
+            'page'        => $request->query('page', 1),
+            'animal_name' => $request->input('animal_name'),
+            'id_species'  => $request->input('id_species'),
+            'id_breed'    => $request->input('id_breed'),
+            'id_shelter'  => $request->input('id_shelter'),
+            'size'        => $request->input('size'),
+            'color'       => $request->input('color'),
+        ], fn($value) => !is_null($value) && $value !== '');
+        $url = "{$this->apiBaseUrl}/animals";
+        $response = Http::get($url, $queryParams);
         
-        $apiResponse = $response->json();
-        $animals = $apiResponse['data'] ?? [];
-        $paginator = $apiResponse;
-        return view('public.animals.index', compact('animals', 'paginator'));
+        if ($response->successful()) {
+            $apiData = $response->json();
+            $animals = $apiData['data'] ?? []; 
+            $paginator = $apiData; 
+        } else {
+            $animals = [];
+            $paginator = [];
+        }
+
+        $apiUrl = env('API_URL'); 
+
+        return view('public.animals.index', compact('animals', 'paginator', 'species', 'breeds', 'shelters', 'apiUrl'));
     }
 
-    /**
-     * Muestra la información detallada de un solo animal.
-     */
     public function show(string $id)
     {
         $response = Http::get("{$this->apiBaseUrl}/animals/{$id}");
@@ -45,6 +59,8 @@ class PublicAnimalController extends Controller
         }
 
         $animal = $response->json();
-        return view('public.animals.show', compact('animal'));
+        $apiUrl = env('API_URL'); 
+        
+        return view('public.animals.show', compact('animal', 'apiUrl'));
     }
 }
