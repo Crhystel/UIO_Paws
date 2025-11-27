@@ -32,6 +32,7 @@ class PublicAnimalController extends Controller
             'id_shelter'  => $request->input('id_shelter'),
             'size'        => $request->input('size'),
             'color'       => $request->input('color'),
+            'status'      => 'Disponible',
         ], fn($value) => !is_null($value) && $value !== '');
         $url = "{$this->apiBaseUrl}/animals";
         $response = Http::get($url, $queryParams);

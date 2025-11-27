@@ -33,7 +33,7 @@ class AdoptionController extends Controller
         }
 
         $animal = $response->json();
-        return view('user.adoption-form', compact('animal'));
+        return view('user.adoption.adoption-form', compact('animal'));
     }
 
     /**
@@ -84,12 +84,14 @@ class AdoptionController extends Controller
     public function myApplications()
     {
         $response = Http::withToken($this->getApiToken())->get("{$this->apiBaseUrl}/user/my-applications");
-
         if ($response->failed()) {
             return redirect()->route('dashboard')->with('error', 'No se pudieron cargar tus solicitudes.');
         }
-
-        $applications = $response->json();
-        return view('user.my-applications', $applications);
+        $data = $response->json(); 
+        $apiUrl = env('API_URL'); 
+        return view('user.my-applications', array_merge($data, [
+            'applications' => $data, 
+            'apiUrl' => $apiUrl
+        ]));
     }
 }

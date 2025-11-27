@@ -27,7 +27,7 @@
                                 <input type="text" name="animal_name" class="form-control" placeholder="Ej. Max..." value="{{ request('animal_name') }}">
                             </div>
 
-                            <!-- Especie (NUEVO) -->
+                            <!-- Especie  -->
                             <div class="mb-3">
                                 <label class="form-label small fw-bold text-muted text-uppercase">Especie</label>
                                 <select name="id_species" class="form-select" onchange="this.form.submit()">

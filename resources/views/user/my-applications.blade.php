@@ -4,105 +4,85 @@
 
 @section('content')
 <div class="container mt-5">
-    <h1>Mis Solicitudes</h1>
-    <p>Aquí puedes ver el estado de todas las solicitudes que has enviado.</p>
+    <h1 class="mb-4">Mis Solicitudes</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Inicio</a></li>
+        <li class="breadcrumb-item active">Historial</li>
+    </ol>
 
+    {{-- Mensajes de feedback --}}
     @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
     @endif
 
-    {{-- Solicitudes de Adopción --}}
-    <div class="card mt-4">
-        <div class="card-header">
-            <h3>Adopciones</h3>
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>Fecha</th>
-                            <th>Animalito</th>
-                            <th>Estado</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($adoption_applications as $app)
-                            <tr>
-                                <td>{{ \Carbon\Carbon::parse($app['application_date'])->format('d/m/Y') }}</td>
-                                <td>{{ $app['animal']['animal_name'] }}</td>
-                                <td>
-                                    <span class="badge 
-                                        @if($app['status']['status_name'] == 'Aprobado') bg-success 
-                                        @elseif($app['status']['status_name'] == 'Rechazado') bg-danger
-                                        @else bg-warning text-dark @endif">
-                                        {{ $app['status']['status_name'] }}
-                                    </span>
-                                </td>
-                            </tr>
-                            
-                            @if(!empty($app['admin_notes']))
-                            <tr class="table-light">
-                                <td colspan="3">
-                                    <small class="text-muted"><strong>Notas del administrador:</strong></small><br>
-                                    <p class="mb-0" style="white-space: pre-wrap;">{{ $app['admin_notes'] }}</p>
-                                </td>
-                            </tr>
-                            @endif
+    {{-- PESTAÑAS DE NAVEGACIÓN --}}
+    <ul class="nav nav-tabs" id="myApplicationsTabs" role="tablist">
+        {{-- Botón Pestaña Adopciones --}}
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="adoptions-tab-button" data-bs-toggle="tab" data-bs-target="#adoptions-tab-pane" type="button" role="tab" aria-controls="adoptions-tab-pane" aria-selected="true">
+                Adopciones <span class="badge bg-secondary">{{ count($adoption_applications ?? []) }}</span>
+            </button>
+        </li>
+        {{-- Botón Pestaña Donaciones --}}
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="donations-tab-button" data-bs-toggle="tab" data-bs-target="#donations-tab-pane" type="button" role="tab" aria-controls="donations-tab-pane" aria-selected="false">
+                Donaciones <span class="badge bg-secondary">{{ count($donation_applications ?? []) }}</span>
+            </button>
+        </li>
+    </ul>
 
-                        @empty
-                            <tr>
-                                <td colspan="3" class="text-center">Aún no has enviado ninguna solicitud de adopción.</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-             @if(isset($adoption_applications[0]['status']['status_name']) && $adoption_applications[0]['status']['status_name'] == 'Aprobado')
-                <div class="alert alert-info mt-3">
-                    <strong>¡Felicidades!</strong> Una de tus solicitudes fue aprobada. Pronto nos comunicaremos contigo por correo para los siguientes pasos.
-                </div>
-            @endif
-        </div>
-    </div>
-    {{-- Solicitudes de Donacion --}}
-    <div class="card mt-4">
-        <div class="card-header">
-            <h3>Donaciones</h3>
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Fecha de Solicitud</th>
-                            <th>Estado</th>
-                            <th>Notas del Admin</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($donation_applications as $app)
-                            <tr>
-                                <td>{{ \Carbon\Carbon::parse($app['application_date'])->format('d/m/Y') }}</td>
-                                <td>
-                                    <span class="badge 
-                                        @if($app['status']['status_name'] == 'Aprobado') bg-success 
-                                        @elseif($app['status']['status_name'] == 'Rechazado') bg-danger
-                                        @else bg-warning text-dark @endif">
-                                        {{ $app['status']['status_name'] }}
-                                    </span>
-                                </td>
-                                <td>{{ $app['admin_notes'] ?? 'Sin notas' }}</td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="3" class="text-center">Aún no has ofrecido ninguna donación.</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+    {{-- CONTENIDO DE LAS PESTAÑAS --}}
+    <div class="tab-content" id="myApplicationsTabsContent">
+        
+        {{-- Panel de Adopciones --}}
+        <div class="tab-pane fade show active" id="adoptions-tab-pane" role="tabpanel" aria-labelledby="adoptions-tab-button" tabindex="0">
+            <div class="card card-body border-top-0 rounded-0 rounded-bottom">
+                @include('user.adoption.partials.adoptions-table', ['applications' => $adoption_applications ?? []])
             </div>
         </div>
-    </div>
+
+        {{-- Panel de Donaciones --}}
+        <div class="tab-pane fade" id="donations-tab-pane" role="tabpanel" aria-labelledby="donations-tab-button" tabindex="0">
+            <div class="card card-body border-top-0 rounded-0 rounded-bottom">
+                @if(view()->exists('user.adoption.partials.donations-table'))
+                    @include('user.adoption.partials.donations-table', ['applications' => $donation_applications ?? []])
+                @else
+                    <p class="text-muted p-3">Historial de donaciones no disponible por el momento.</p>
+                @endif
+            </div>
+        </div>
+
+    </div> 
 </div>
+
+<style>
+    .timeline {
+        position: relative;
+        padding-left: 10px;
+    }
+    .timeline::before {
+        content: '';
+        position: absolute;
+        top: 15px;
+        bottom: 0;
+        left: 26px;
+        width: 2px;
+        background: #e9ecef;
+        z-index: 0;
+    }
+    .timeline > div {
+        position: relative;
+        z-index: 1;
+    }
+    .grayscale-img img {
+        filter: grayscale(100%);
+        transition: filter 0.3s ease;
+    }
+    .grayscale-img img:hover {
+        filter: grayscale(0%);
+    }
+</style>
 @endsection

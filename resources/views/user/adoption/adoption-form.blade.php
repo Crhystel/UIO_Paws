@@ -8,11 +8,9 @@
     <div class="row">
         {{-- Columna de Información del Animal --}}
         <div class="col-lg-4 text-center mb-4 mb-lg-0">
-            {{-- AJUSTE 3: top: 110px para que al hacer scroll no se meta debajo del menú --}}
             <div class="card border-0 shadow-sm sticky-top" style="top: 110px; z-index: 0;">
                 <div class="card-body">
                     @if(!empty($animal['photos']))
-                        {{-- AJUSTE 2: Construcción correcta de la URL de la imagen --}}
                         <img src="{{ env('API_URL', 'http://127.0.0.1:8000') . '/storage/' . $animal['photos'][0]['image_url'] }}" 
                              class="img-fluid rounded-circle mb-3 shadow-sm border border-4 border-white" 
                              style="width: 200px; height: 200px; object-fit: cover;" 
