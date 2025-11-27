@@ -41,7 +41,9 @@ class DonationItemsCatalogController extends Controller
      */
     public function create()
     {
-        return view('admin.donation-items.create');
+        $sheltersResponse = Http::withToken($this->getApiToken())->get("{$this->apiBaseUrl}/shelters");
+        $shelters = $sheltersResponse->successful() ? $sheltersResponse->json() : [];
+        return view('admin.donation-items.create', compact('shelters'));
     }
 
     /**
@@ -50,14 +52,17 @@ class DonationItemsCatalogController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'item_name' => 'required|string|max:255',
-            'description' => 'nullable|string',
+            'item_name'       => 'required|string|max:255',
+            'category'        => 'required|string|max:255', 
+            'quantity_needed' => 'required|integer|min:1',   
+            'id_shelter'      => 'nullable|integer',         
+            'description'     => 'nullable|string',
         ]);
-
-        $response = Http::withToken($this->getApiToken())->post("{$this->apiBaseUrl}/donation-items-catalog", $validatedData);
+        $response = Http::withToken($this->getApiToken())
+            ->post("{$this->apiBaseUrl}/donation-items-catalog", $validatedData);
 
         if ($response->failed()) {
-            $errors = $response->json()['errors'] ?? ['api_error' => 'Error al crear el artículo. Revisa los datos.'];
+            $errors = $response->json()['errors'] ?? ['api_error' => 'Error al crear el artículo.'];
             return back()->withErrors($errors)->withInput();
         }
 
@@ -71,13 +76,15 @@ class DonationItemsCatalogController extends Controller
     public function edit(string $item)
     {
         $response = Http::withToken($this->getApiToken())->get("{$this->apiBaseUrl}/donation-items-catalog/{$item}");
+        $sheltersResponse = Http::withToken($this->getApiToken())->get("{$this->apiBaseUrl}/shelters");
 
         if ($response->failed()) {
             return redirect()->route('admin.donation-items.index')->with('error', 'Artículo no encontrado.');
         }
-
         $itemData = $response->json();
-        return view('admin.donation-items.edit', ['item' => $itemData]);
+        $shelters = $sheltersResponse->successful() ? $sheltersResponse->json() : [];
+
+        return view('admin.donation-items.edit', ['item' => $itemData, 'shelters' => $shelters]);
     }
 
     /**
@@ -86,11 +93,15 @@ class DonationItemsCatalogController extends Controller
     public function update(Request $request, string $item)
     {
         $validatedData = $request->validate([
-            'item_name' => 'required|string|max:255',
-            'description' => 'nullable|string',
+            'item_name'       => 'required|string|max:255',
+            'category'        => 'required|string|max:255',
+            'quantity_needed' => 'required|integer|min:1',
+            'id_shelter'      => 'nullable|integer',
+            'description'     => 'nullable|string',
         ]);
 
-        $response = Http::withToken($this->getApiToken())->put("{$this->apiBaseUrl}/donation-items-catalog/{$item}", $validatedData);
+        $response = Http::withToken($this->getApiToken())
+            ->put("{$this->apiBaseUrl}/donation-items-catalog/{$item}", $validatedData);
 
         if ($response->failed()) {
             $errors = $response->json()['errors'] ?? ['api_error' => 'Error al actualizar el artículo.'];

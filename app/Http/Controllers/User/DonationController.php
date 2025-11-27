@@ -26,13 +26,14 @@ class DonationController extends Controller
      */
     public function create()
     {
-        $response = Http::get("{$this->apiBaseUrl}/public/donation-items");
+        $response = Http::get("{$this->apiBaseUrl}/public/donation-items?per_page=100");
 
         if ($response->failed()) {
             return back()->with('error', 'No se pudo cargar la lista de artículos para donar.');
         }
         
-        $itemsCatalog = $response->json();
+        $responseJson = $response->json();
+        $itemsCatalog = $responseJson['data'] ?? $responseJson;
         
         return view('user.donations.form', compact('itemsCatalog'));
     }

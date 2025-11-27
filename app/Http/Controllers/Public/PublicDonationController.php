@@ -18,16 +18,27 @@ class PublicDonationController extends Controller
     /**
      * Muestra la lista pública de artículos necesarios para donar.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $response = Http::get("{$this->apiBaseUrl}/donation-items");
-        if ($response->failed()) {
-            return view('public.donations.index', ['items' => []])
-                   ->with('error', 'No pudimos cargar la lista de artículos necesarios en este momento.');
+        $sheltersResponse = Http::get("{$this->apiBaseUrl}/shelters");
+        $shelters = $sheltersResponse->successful() ? $sheltersResponse->json() : [];
+        $queryParams = array_filter([
+            'page'      => $request->query('page', 1),
+            'category'  => $request->input('category'),
+            'id_shelter'=> $request->input('id_shelter'),
+            'search'    => $request->input('search'),
+        ]);
+        $response = Http::get("{$this->apiBaseUrl}/donation-items", $queryParams);
+        
+        if ($response->successful()) {
+            $apiData = $response->json();
+            $items = $apiData['data'] ?? []; 
+            $paginator = $apiData; 
+        } else {
+            $items = [];
+            $paginator = [];
         }
-        
-        $items = $response->json();
-        
-        return view('public.donations.index', compact('items'));
+
+        return view('public.donations.index', compact('items', 'paginator', 'shelters'));
     }
 }

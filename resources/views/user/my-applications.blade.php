@@ -40,6 +40,7 @@
         {{-- Panel de Adopciones --}}
         <div class="tab-pane fade show active" id="adoptions-tab-pane" role="tabpanel" aria-labelledby="adoptions-tab-button" tabindex="0">
             <div class="card card-body border-top-0 rounded-0 rounded-bottom">
+                {{-- Mantiene la ruta de adopciones --}}
                 @include('user.adoption.partials.adoptions-table', ['applications' => $adoption_applications ?? []])
             </div>
         </div>
@@ -47,11 +48,19 @@
         {{-- Panel de Donaciones --}}
         <div class="tab-pane fade" id="donations-tab-pane" role="tabpanel" aria-labelledby="donations-tab-button" tabindex="0">
             <div class="card card-body border-top-0 rounded-0 rounded-bottom">
-                @if(view()->exists('user.adoption.partials.donations-table'))
-                    @include('user.adoption.partials.donations-table', ['applications' => $donation_applications ?? []])
+                
+                {{-- CORRECCIÓN AQUÍ: Apuntamos a user.donations.partials --}}
+                @if(view()->exists('user.donations.partials.donations-table'))
+                    @include('user.donations.partials.donations-table', ['applications' => $donation_applications ?? []])
                 @else
-                    <p class="text-muted p-3">Historial de donaciones no disponible por el momento.</p>
+                    {{-- Fallback por si acaso --}}
+                    @if(view()->exists('user.adoption.partials.donations-table'))
+                         @include('user.adoption.partials.donations-table', ['applications' => $donation_applications ?? []])
+                    @else
+                        <p class="text-muted p-3">No se encuentra el archivo de la tabla de donaciones.</p>
+                    @endif
                 @endif
+                
             </div>
         </div>
 
