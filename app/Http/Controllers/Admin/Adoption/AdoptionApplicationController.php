@@ -36,7 +36,7 @@ class AdoptionApplicationController extends Controller
         $applications = $apiResponse['data'] ?? [];
         $paginator = $apiResponse;
 
-        return view('admin.applications.adoption.index', compact('applications', 'paginator'));
+        return view('admin.applications.index', compact('applications', 'paginator'));
     }
 
     /**

@@ -7,7 +7,7 @@
     <h1 class="mt-4">Revisar Solicitud #{{ $application['id_adoption_application'] }}</h1>
     <ol class="breadcrumb mb-4">
         <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Panel</a></li>
-        <li class="breadcrumb-item"><a href="{{ route('admin.applications.adoption.index') }}">Solicitudes de Adopción</a></li>
+        <li class="breadcrumb-item"><a href="{{ route('admin.applications.index') }}">Solicitudes</a></li>
         <li class="breadcrumb-item active">Revisión</li>
     </ol>
 

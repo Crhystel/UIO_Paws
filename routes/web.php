@@ -63,6 +63,11 @@ Route::middleware('auth.user')->group(function () {
             Route::get('/ofrecer', [DonationController::class, 'create'])->name('create');
             Route::post('/ofrecer', [DonationController::class, 'store'])->name('store');
         });
+        // Rutas para el proceso de voluntariado
+        Route::prefix('voluntariado')->name('user.volunteer.')->group(function () {
+            Route::get('/postular', [\App\Http\Controllers\User\VolunteerController::class, 'create'])->name('create');
+            Route::post('/postular', [\App\Http\Controllers\User\VolunteerController::class, 'store'])->name('store');
+        });
     });
 
     /*
@@ -97,22 +102,26 @@ Route::middleware('auth.user')->group(function () {
         Route::post('animals/{animal}/records', [\App\Http\Controllers\Admin\AnimalController::class, 'addMedicalRecord'])->name('animals.records.store');
         Route::put('records/{record}', [\App\Http\Controllers\Admin\AnimalController::class, 'updateMedicalRecord'])->name('records.update');
         Route::delete('records/{record}', [\App\Http\Controllers\Admin\AnimalController::class, 'deleteMedicalRecord'])->name('records.destroy');
-
+        //Ruta general para solicitudes
+        Route::get('/applications', [ApplicationController::class, 'index'])->name('applications.index');
         // Rutas para revisar solicitudes de adopción
         Route::prefix('applications/adoption')->name('applications.adoption.')->group(function () {
-            Route::get('/', [\App\Http\Controllers\Admin\Adoption\AdoptionApplicationController::class, 'index'])->name('index');
             Route::get('/{application}', [\App\Http\Controllers\Admin\Adoption\AdoptionApplicationController::class, 'show'])->name('show');
             Route::put('/{application}/status', [\App\Http\Controllers\Admin\Adoption\AdoptionApplicationController::class, 'updateStatus'])->name('updateStatus'); // Cambiado a PUT
         });
 
         // Rutas para revisar solicitudes de donación
         Route::prefix('applications/donations')->name('applications.donation.')->group(function () {
-            Route::get('/', [\App\Http\Controllers\Admin\Donation\DonationApplicationController::class, 'index'])->name('index');
             Route::get('/{application}', [\App\Http\Controllers\Admin\Donation\DonationApplicationController::class, 'show'])->name('show');
             Route::put('/{application}/status', [\App\Http\Controllers\Admin\Donation\DonationApplicationController::class, 'updateStatus'])->name('updateStatus');
         });
         //Rutas para ver todas las solicitudes
         Route::get('/applications', [ApplicationController::class, 'index'])->name('applications.index');
+        // Rutas para revisar solicitudes de voluntariado
+        Route::prefix('applications/volunteer')->name('applications.volunteer.')->group(function () {
+            Route::get('/{application}', [\App\Http\Controllers\Admin\Volunteer\VolunteerApplicationController::class, 'show'])->name('show');
+            Route::put('/{application}/status', [\App\Http\Controllers\Admin\Volunteer\VolunteerApplicationController::class, 'updateStatus'])->name('updateStatus');
+        });
     });
     /*
      Rutas Exclusivas para el rol 'SuperAdmin'

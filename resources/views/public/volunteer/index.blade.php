@@ -9,9 +9,11 @@
             Mira las áreas en las que necesitamos tu talento y tu pasión.
         </p>
     </div>
+    
     @if(session('error'))
         <div class="alert alert-danger">{{ session('error') }}</div>
     @endif
+
     <div class="row g-4">
         @forelse($opportunities as $opportunity)
             <div class="col-md-12">
@@ -19,11 +21,26 @@
                     <div class="card-body">
                         <h3 class="card-title">{{ $opportunity['title'] }}</h3>
                         <p class="card-text">{{ $opportunity['description'] }}</p>
+                        
                         @if($opportunity['requirements'])
                             <h5 class="mt-4">Requisitos:</h5>
                             <p class="card-text text-secondary">{{ $opportunity['requirements'] }}</p>
                         @endif
-                        <a href="{{ route('register.form') }}" class="btn btn-primary mt-3">¡Quiero Postularme!</a>
+                        <div class="mt-3">
+                            @auth
+                                <a href="{{ route('user.volunteer.create', ['opportunity_id' => $opportunity['id_volunteer_opportunity']]) }}" class="btn btn-primary">
+                                    Aplicar a este puesto
+                                </a>
+                            @else
+                                <a href="{{ route('login') }}" class="btn btn-outline-primary me-2">
+                                    Inicia sesión para aplicar
+                                </a>
+                                <a href="{{ route('register.form') }}" class="btn btn-outline-secondary">
+                                    Registrarse
+                                </a>
+                            @endauth
+                        </div>
+
                     </div>
                 </div>
             </div>

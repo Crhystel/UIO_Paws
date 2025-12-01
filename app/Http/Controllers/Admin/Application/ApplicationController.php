@@ -20,25 +20,27 @@ class ApplicationController extends Controller
     {
         return Session::get('api_token');
     }
-
-    /**
-     * Muestra la vista unificada de todas las solicitudes.
-     */
-    public function index()
+    public function index(Request $request)
     {
-        $response = Http::withToken($this->getApiToken())->get("{$this->apiBaseUrl}/applications-summary");
+        $adopResponse = Http::withToken($this->getApiToken())
+            ->get("{$this->apiBaseUrl}/adoption-applications", ['page' => $request->query('page_adop')]);
+        $donResponse = Http::withToken($this->getApiToken())
+            ->get("{$this->apiBaseUrl}/donation-applications", ['page' => $request->query('page_don')]);
+        $volResponse = Http::withToken($this->getApiToken())
+            ->get("{$this->apiBaseUrl}/volunteer-applications", ['page' => $request->query('page_vol')]);
+        $adoptionsData = $adopResponse->successful() ? $adopResponse->json() : [];
+        $donationsData = $donResponse->successful() ? $donResponse->json() : [];
+        $volunteersData = $volResponse->successful() ? $volResponse->json() : [];
 
-        if ($response->failed()) {
-            return back()->with('error', 'No se pudieron cargar las solicitudes desde la API.');
-        }
-        
-        $data = $response->json();
-        
         return view('admin.applications.index', [
-            'adoptions' => $data['adoptions']['data'] ?? [],
-            'donations' => $data['donations']['data'] ?? [],
-            'adoptionsPaginator' => $data['adoptions'],
-            'donationsPaginator' => $data['donations']
+            'adoptions' => $adoptionsData['data'] ?? [],
+            'adoptionsPaginator' => $adoptionsData,
+            
+            'donations' => $donationsData['data'] ?? [],
+            'donationsPaginator' => $donationsData,
+            
+            'volunteers' => $volunteersData['data'] ?? [],
+            'volunteersPaginator' => $volunteersData,
         ]);
     }
 }

@@ -14,6 +14,8 @@
                     <tr>
                         <th>Título</th>
                         <th>Estado</th>
+                        {{-- CAMBIO: En lugar de "Puesto" (que es lo mismo que título), mostramos cuántos aplicaron --}}
+                        <th class="text-center">Solicitudes Recibidas</th>
                         <th class="text-end">Acciones</th>
                     </tr>
                 </thead>
@@ -28,6 +30,11 @@
                                     <span class="badge bg-secondary">Inactivo</span>
                                 @endif
                             </td>
+                            <td class="text-center">
+                                <span class="badge bg-primary rounded-pill fs-6">
+                                    {{ $opportunity['applications_count'] ?? 0 }}
+                                </span>
+                            </td>
                             <td class="text-end">
                                 <a href="{{ route('admin.volunteer-opportunities.edit', $opportunity['id_volunteer_opportunity']) }}" class="btn btn-sm btn-warning">Editar</a>
                                 <form action="{{ route('admin.volunteer-opportunities.destroy', $opportunity['id_volunteer_opportunity']) }}" method="POST" class="d-inline" onsubmit="return confirm('¿Eliminar esta oportunidad?');">
@@ -38,7 +45,7 @@
                             </td>
                         </tr>
                     @empty
-                        <tr><td colspan="3" class="text-center text-muted">No hay oportunidades de voluntariado creadas.</td></tr>
+                        <tr><td colspan="4" class="text-center text-muted">No hay oportunidades de voluntariado creadas.</td></tr>
                     @endforelse
                 </tbody>
             </table>
