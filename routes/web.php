@@ -76,9 +76,17 @@ Route::middleware('auth.user')->group(function () {
     // Ver mis solicitudes (un admin puede tener esta página, aunque esté vacía)
     Route::get('/mis-solicitudes', [AdoptionController::class, 'myApplications'])->name('adoption.my-applications');
 
-    // Perfil de usuario (todos los roles tienen un perfil)
+    // --- GRUPO DE RUTAS DE PERFIL ---
     Route::prefix('profile')->name('user.')->group(function () {
+        // Mostrar el perfil y formularios
         Route::get('/', [ProfileController::class, 'show'])->name('profile.show');
+        
+        // Procesar actualizaciones
+        Route::put('/', [ProfileController::class, 'update'])->name('profile.update');
+        Route::put('/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
+        Route::post('/photo', [ProfileController::class, 'updatePhoto'])->name('profile.photo.update');
+
+        // Gestión de contactos de emergencia
         Route::post('/emergency-contacts', [ProfileController::class, 'storeEmergencyContact'])->name('contacts.store');
         Route::delete('/emergency-contacts/{contact}', [ProfileController::class, 'destroyEmergencyContact'])->name('contacts.destroy');
     });

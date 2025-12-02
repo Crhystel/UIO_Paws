@@ -26,14 +26,55 @@ class ProfileController extends Controller
      */
     public function show()
     {
-        $response = Http::withToken($this->getApiToken())->get("{$this->apiBaseUrl}/user/emergency-contacts");
+        $profileResponse = Http::withToken($this->getApiToken())->get("{$this->apiBaseUrl}/profile");
+        $contactsResponse = Http::withToken($this->getApiToken())->get("{$this->apiBaseUrl}/user/emergency-contacts");
 
-        if ($response->failed()) {
-            return redirect()->route('dashboard')->with('error', 'No se pudo cargar la información de tu perfil.');
+        if ($profileResponse->failed()) {
+            return back()->with('error', 'No se pudo cargar tu perfil.');
         }
 
-        $contacts = $response->json();
-        return view('user.profile', compact('contacts'));
+        $user = $profileResponse->json();
+        $contacts = $contactsResponse->successful() ? $contactsResponse->json() : [];
+        $apiUrl = $this->apiBaseUrl;
+        return view('user.profile.show', compact('user', 'contacts','apiUrl'));
+    }
+    public function update(Request $request)
+    {
+        $payload = $request->except(['_token', '_method']);
+        
+        $response = Http::withToken($this->getApiToken())
+            ->put("{$this->apiBaseUrl}/user/profile", $payload);
+
+        if ($response->failed()) {
+            return back()->withErrors($response->json('errors'))->withInput();
+        }
+
+        return redirect()->route('user.profile.show')->with('success', 'Perfil actualizado con éxito.');
+    }
+    public function updatePassword(Request $request)
+    {
+        $response = Http::withToken($this->getApiToken())
+            ->put("{$this->apiBaseUrl}/user/profile/password", $request->all());
+
+        if ($response->failed()) {
+            return back()->withErrors($response->json('errors'))->withInput();
+        }
+
+        return redirect()->route('user.profile.show')->with('success', 'Contraseña actualizada.');
+    }
+    public function updatePhoto(Request $request)
+    {
+        $request->validate(['photo' => 'required|image|max:2048']);
+
+        $response = Http::withToken($this->getApiToken())
+            ->attach('photo', file_get_contents($request->file('photo')), $request->file('photo')->getClientOriginalName())
+            ->post("{$this->apiBaseUrl}/user/profile/photo");
+            
+        if ($response->failed()) {
+            return back()->with('error', 'No se pudo subir la foto.');
+        }
+        
+        return redirect()->route('user.profile.show')->with('success', 'Foto de perfil actualizada.');
     }
 
     /**
