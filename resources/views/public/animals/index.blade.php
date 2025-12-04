@@ -199,10 +199,6 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="mb-4">
-                        <label class="small fw-bold text-uppercase mb-1" style="color: var(--color-acento);">Weight</label>
-                        <input type="text" name="weight" class="form-control form-control-rounded" placeholder="Ej. 2" value="{{ request('weight') }}">
-                    </div>
                     <!-- Color -->
                     <div class="mb-4">
                         <label class="small fw-bold text-uppercase mb-1" style="color: var(--color-acento);">Color</label>
