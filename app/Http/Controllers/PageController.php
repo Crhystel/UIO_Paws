@@ -6,6 +6,6 @@ class PageController extends Controller
 {
     public function home()
     {
-        return view('welcome');
+        return view('Welcome');
     }
 }
