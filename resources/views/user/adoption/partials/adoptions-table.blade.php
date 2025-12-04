@@ -101,19 +101,21 @@
 </div>
 
 {{-- MODALES --}}
-@foreach($applications as $app)
-    @php
-        $statusName = $app['status']['status_name'] ?? '';
-        $isApproved = in_array($statusName, ['Aprobada', 'Aprobado']);
-        $isRejected = in_array($statusName, ['Rechazada', 'Rechazado']);
-        
-        $hasPhoto = !empty($app['animal']['photos'][0]['image_url']);
-        $photoUrl = $hasPhoto ? $apiUrl . '/storage/' . $app['animal']['photos'][0]['image_url'] : null;
-    @endphp
+@push('modals')
+    @foreach($applications as $app)
+        @php
+            $statusName = $app['status']['status_name'] ?? '';
+            $isApproved = in_array($statusName, ['Aprobada', 'Aprobado']);
+            $isRejected = in_array($statusName, ['Rechazada', 'Rechazado']);
+            
+            $hasPhoto = !empty($app['animal']['photos'][0]['image_url']);
+            $photoUrl = $hasPhoto ? $apiUrl . '/storage/' . $app['animal']['photos'][0]['image_url'] : null;
+        @endphp
 
-    @if($isApproved)
-        @include('user.adoption.partials.celebration-modal', ['app' => $app, 'photoUrl' => $photoUrl])
-    @elseif($isRejected)
-        @include('user.adoption.partials.rejection-modal', ['app' => $app, 'photoUrl' => $photoUrl])
-    @endif
-@endforeach
+        @if($isApproved)
+            @include('user.adoption.partials.celebration-modal', ['app' => $app, 'photoUrl' => $photoUrl])
+        @elseif($isRejected)
+            @include('user.adoption.partials.rejection-modal', ['app' => $app, 'photoUrl' => $photoUrl])
+        @endif
+    @endforeach
+@endpush

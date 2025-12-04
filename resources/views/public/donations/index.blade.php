@@ -27,6 +27,7 @@
         background-image: radial-gradient(rgba(116, 198, 157, 0.4) 1.5px, transparent 1.5px);
         background-size: 30px 30px;
         background-attachment: fixed;
+        overflow-x: hidden; 
     }
 
     /* === TIPOGRAFÍA === */

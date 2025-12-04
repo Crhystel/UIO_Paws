@@ -1,5 +1,5 @@
 <div class="table-responsive">
-    {{-- Tabla con botones de acción 100% UNIFICADOS --}}
+    {{-- Tabla con botones de acción --}}
     <table class="table table-hover align-middle">
         <thead>
             <tr>
@@ -46,10 +46,10 @@
                          </span>
                     </td>
 
-                    {{-- 4. ACCIONES (Botones estandarizados) --}}
+                    {{-- 4. ACCIONES --}}
                     <td class="text-end">
                         @if($isApproved)
-                            {{-- Botón APROBADO (Unificado) --}}
+                            {{-- Botón APROBADO --}}
                             <button type="button" class="btn btn-sm btn-outline-success fw-bold rounded-pill" 
                                     data-bs-toggle="modal" 
                                     data-bs-target="#donationSuccess-{{ $app['id_donation_application'] }}">
@@ -57,7 +57,7 @@
                             </button>
                         
                         @elseif($isRejected)
-                            {{-- Botón RECHAZADO (Unificado) --}}
+                            {{-- Botón RECHAZADO --}}
                             <button type="button" class="btn btn-sm btn-outline-danger fw-bold rounded-pill" 
                                     data-bs-toggle="modal" 
                                     data-bs-target="#donationReject-{{ $app['id_donation_application'] }}">
@@ -65,7 +65,7 @@
                             </button>
                         
                         @else
-                             {{-- Botón PENDIENTE CON NOTAS (Unificado) --}}
+                             {{-- Botón PENDIENTE CON NOTAS --}}
                             @if(!empty($app['admin_notes']))
                                 <button type="button" class="btn btn-sm btn-outline-secondary fw-bold rounded-pill" 
                                         data-bs-toggle="collapse" 
@@ -76,10 +76,11 @@
                                 <span class="text-muted small fst-italic">En revisión</span>
                             @endif
                         @endif
-                    </td>
+                        
+                        {{-- OJO: AQUÍ ELIMINÉ LOS INCLUDES QUE ESTABAN DENTRO DEL TD --}}
+                    </td> 
                 </tr>
 
-                {{-- NOTA PENDIENTE (Collapse) - Añadido para consistencia --}}
                 @if(!empty($app['admin_notes']) && !$isApproved && !$isRejected)
                     <tr class="collapse bg-light" id="note-donation-{{ $app['id_donation_application'] }}">
                         <td colspan="4" class="p-3 border-top-0">
@@ -92,13 +93,6 @@
                     </tr>
                 @endif
                 
-                {{-- MODALES --}}
-                @if($isApproved)
-                    @include('user.donations.partials.celebration-modal', ['app' => $app])
-                @elseif($isRejected)
-                    @include('user.donations.partials.rejection-modal', ['app' => $app])
-                @endif
-
             @empty
                 <tr>
                     <td colspan="4" class="text-center py-5 text-muted">
@@ -110,3 +104,20 @@
         </tbody>
     </table>
 </div>
+
+{{-- MODALES --}}
+@push('modals')
+    @foreach($applications as $app)
+        @php
+            $statusName = $app['status']['status_name'] ?? '';
+            $isApproved = in_array($statusName, ['Aprobada', 'Aprobado']);
+            $isRejected = in_array($statusName, ['Rechazada', 'Rechazado']);
+        @endphp
+
+        @if($isApproved)
+            @include('user.donations.partials.celebration-modal', ['app' => $app])
+        @elseif($isRejected)
+            @include('user.donations.partials.rejection-modal', ['app' => $app])
+        @endif
+    @endforeach
+@endpush

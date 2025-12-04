@@ -84,16 +84,19 @@
     </table>
 </div>
 
-@foreach($applications as $app)
-    @php
-        $statusName = $app['status']['status_name'] ?? '';
-        $isApproved = in_array($statusName, ['Aprobada', 'Aprobado']);
-        $isRejected = in_array($statusName, ['Rechazada', 'Rechazado']);
-    @endphp
+{{-- MODALES--}}
+@push('modals')
+    @foreach($applications as $app)
+        @php
+            $statusName = $app['status']['status_name'] ?? '';
+            $isApproved = in_array($statusName, ['Aprobada', 'Aprobado']);
+            $isRejected = in_array($statusName, ['Rechazada', 'Rechazado']);
+        @endphp
 
-    @if($isApproved)
-        @include('user.volunteer.partials.celebration-modal', ['app' => $app])
-    @elseif($isRejected)
-        @include('user.volunteer.partials.rejection-modal', ['app' => $app])
-    @endif
-@endforeach
+        @if($isApproved)
+            @include('user.volunteer.partials.celebration-modal', ['app' => $app])
+        @elseif($isRejected)
+            @include('user.volunteer.partials.rejection-modal', ['app' => $app])
+        @endif
+    @endforeach
+@endpush

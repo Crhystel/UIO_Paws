@@ -24,6 +24,7 @@
         background-image: radial-gradient(rgba(116, 198, 157, 0.4) 1.5px, transparent 1.5px);
         background-size: 30px 30px;
         background-attachment: fixed;
+        overflow-x: hidden; 
     }
 
     /* === TEXTOS === */
@@ -42,9 +43,10 @@
         border: 1px solid rgba(116, 198, 157, 0.1); 
         box-shadow: 0 10px 30px rgba(27, 67, 50, 0.03);
         min-height: 400px;
+        overflow:visible !important;
     }
 
-    /* === PESTAÑAS PERSONALIZADAS (Nav Pills) === */
+    /* === PESTAÑAS PERSONALIZADAS === */
     .nav-pills-custom .nav-link {
         color: var(--color-verde-oscuro);
         background: rgba(255,255,255,0.6);

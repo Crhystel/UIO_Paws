@@ -27,6 +27,7 @@
         background-image: radial-gradient(rgba(116, 198, 157, 0.4) 1.5px, transparent 1.5px);
         background-size: 30px 30px;
         background-attachment: fixed;
+        overflow-x: hidden; 
     }
 
     /* === TEXTOS === */
@@ -156,9 +157,6 @@
                         @auth
                             {{-- OPCIÓN 1: USUARIO LOGUEADO --}}
                             <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
-                                <div class="text-success small fw-bold">
-                                    <i class="bi bi-check-circle-fill me-1"></i> Hola, {{ Auth::user()->first_name }}
-                                </div>
                                 <a href="{{ route('user.volunteer.create', ['opportunity_id' => $opportunity['id_volunteer_opportunity']]) }}" class="btn-cta">
                                     Aplicar a este puesto <i class="bi bi-arrow-right ms-2"></i>
                                 </a>

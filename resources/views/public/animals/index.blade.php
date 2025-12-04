@@ -138,9 +138,8 @@
     </div>
 
     <div class="row g-4">
-        <!-- COLUMNA DE FILTROS (Sidebar) -->
+        <!-- COLUMNA DE FILTROS -->
         <div class="col-lg-3">
-            <!-- sticky-top ajustado a top: 100px por si tu navbar es fija -->
             <div class="feature-card pt-4 sticky-top" style="top: 20px; z-index: 10;">
                 <h4 class="fw-bold mb-4" style="color: var(--color-verde-oscuro);">
                     <i class="bi bi-funnel"></i> Filtros
@@ -200,7 +199,10 @@
                             @endforeach
                         </select>
                     </div>
-                     
+                    <div class="mb-4">
+                        <label class="small fw-bold text-uppercase mb-1" style="color: var(--color-acento);">Weight</label>
+                        <input type="text" name="weight" class="form-control form-control-rounded" placeholder="Ej. 2" value="{{ request('weight') }}">
+                    </div>
                     <!-- Color -->
                     <div class="mb-4">
                         <label class="small fw-bold text-uppercase mb-1" style="color: var(--color-acento);">Color</label>

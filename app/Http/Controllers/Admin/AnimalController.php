@@ -74,6 +74,7 @@ class AnimalController extends Controller
             'sex' => 'required|in:Macho,Hembra',
             'age' => 'required|integer|min:0',
             'size' => 'required|in:Pequeño,Mediano,Grande',
+            'weight'=>'required|numeric',
             'main_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'record_event_date' => 'nullable|date|required_with:record_event_type,record_description',
             'record_event_type' => 'nullable|string|max:255|required_with:record_event_date,record_description',
@@ -145,44 +146,44 @@ class AnimalController extends Controller
      * Actualiza un animal llamando a la API.
      */
     public function update(Request $request, string $id)
-{
-    $validatedData = $request->validate([
-        'animal_name' => 'required|string|max:255',
-        'status' => 'required|string',
-        'birth_date' => 'nullable|date',
-        'color' => 'required|string|max:50',
-        'is_sterilized' => 'nullable|boolean',
-        'description' => 'nullable|string',
-        'id_breed' => 'required|integer',
-        'id_shelter' => 'required|integer',
-        'sex' => 'required|in:Macho,Hembra',
-        'age' => 'required|integer|min:0',
-        'size' => 'required|in:Pequeño,Mediano,Grande',
-        'main_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
-    ]);
-    $animalData = $request->except(['main_photo', '_token', '_method']);
-    $animalData['is_sterilized'] = $request->has('is_sterilized');
-    $response = Http::withToken($this->getApiToken())->put("{$this->apiBaseUrl}/animals/{$id}", $animalData);
+    {
+        $validatedData = $request->validate([
+            'animal_name' => 'required|string|max:255',
+            'status' => 'required|string',
+            'birth_date' => 'nullable|date',
+            'color' => 'required|string|max:50',
+            'is_sterilized' => 'nullable|boolean',
+            'description' => 'nullable|string',
+            'id_breed' => 'required|integer',
+            'id_shelter' => 'required|integer',
+            'sex' => 'required|in:Macho,Hembra',
+            'age' => 'required|integer|min:0',
+            'size' => 'required|in:Pequeño,Mediano,Grande',
+            'main_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+        ]);
+        $animalData = $request->except(['main_photo', '_token', '_method']);
+        $animalData['is_sterilized'] = $request->has('is_sterilized');
+        $response = Http::withToken($this->getApiToken())->put("{$this->apiBaseUrl}/animals/{$id}", $animalData);
 
-    if ($response->failed()) {
-        return back()->withErrors($response->json()['errors'] ?? ['api_error' => 'Error al actualizar el animal.'])->withInput();
-    }
-    if ($request->hasFile('main_photo')) {
-        $animalDetailsResponse = Http::withToken($this->getApiToken())->get("{$this->apiBaseUrl}/animals/{$id}");
-        $animalWithPhotos = $animalDetailsResponse->json();
-        if (isset($animalWithPhotos['photos']) && !empty($animalWithPhotos['photos'])) {
-            $photoId = $animalWithPhotos['photos'][0]['id_animal_photos'];
-            Http::withToken($this->getApiToken())
-                ->attach('photo', file_get_contents($request->file('main_photo')), $request->file('main_photo')->getClientOriginalName())
-                ->post("{$this->apiBaseUrl}/photos/{$photoId}");
-        } else {
-            Http::withToken($this->getApiToken())
-                ->attach('photo', file_get_contents($request->file('main_photo')), $request->file('main_photo')->getClientOriginalName())
-                ->post("{$this->apiBaseUrl}/animals/{$id}/photos");
+        if ($response->failed()) {
+            return back()->withErrors($response->json()['errors'] ?? ['api_error' => 'Error al actualizar el animal.'])->withInput();
         }
+        if ($request->hasFile('main_photo')) {
+            $animalDetailsResponse = Http::withToken($this->getApiToken())->get("{$this->apiBaseUrl}/animals/{$id}");
+            $animalWithPhotos = $animalDetailsResponse->json();
+            if (isset($animalWithPhotos['photos']) && !empty($animalWithPhotos['photos'])) {
+                $photoId = $animalWithPhotos['photos'][0]['id_animal_photos'];
+                Http::withToken($this->getApiToken())
+                    ->attach('photo', file_get_contents($request->file('main_photo')), $request->file('main_photo')->getClientOriginalName())
+                    ->post("{$this->apiBaseUrl}/photos/{$photoId}");
+            } else {
+                Http::withToken($this->getApiToken())
+                    ->attach('photo', file_get_contents($request->file('main_photo')), $request->file('main_photo')->getClientOriginalName())
+                    ->post("{$this->apiBaseUrl}/animals/{$id}/photos");
+            }
+        }
+        return redirect()->route('admin.animals.index')->with('success', 'Animal actualizado exitosamente.');
     }
-    return redirect()->route('admin.animals.index')->with('success', 'Animal actualizado exitosamente.');
-}
 
     /**
      * Elimina un animal llamando a la API.
