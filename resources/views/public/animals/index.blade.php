@@ -3,14 +3,9 @@
 @section('title', 'Encuentra tu compañero ideal')
 
 @section('content')
-
-<!-- ========================================== -->
-<!-- 1. ESTILOS EXACTOS DEL WELCOME             -->
-<!-- ========================================== -->
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700;800&display=swap" rel="stylesheet">
 
 <style>
-    /* ... (Mismos estilos CSS de antes, sin cambios aquí) ... */
     :root {
         --color-verde-principal: #74C69D; 
         --color-verde-oscuro: #1B4332;    
@@ -116,18 +111,12 @@
     }
 </style>
 
-<!-- ========================================== -->
-<!-- 2. ESTRUCTURA HTML AJUSTADA                -->
-<!-- ========================================== -->
 
 <!-- Blobs de fondo -->
 <div class="blob blob-1"></div>
 <div class="blob blob-2"></div>
 
-<!-- CAMBIO 1: Cambié 'py-5' por 'pb-5 pt-3'. Esto reduce mucho el espacio superior pero mantiene el inferior -->
 <div class="container pb-5 pt-3" style="position: relative; z-index: 5;">
-    
-    <!-- CAMBIO 2: Eliminé la clase 'mt-4' que añadía margen extra arriba -->
     <div class="text-center mb-5">
         <h1 class="hero-title display-4 mb-3">
             Adopta, <span class="highlight-shape">no compres.</span>

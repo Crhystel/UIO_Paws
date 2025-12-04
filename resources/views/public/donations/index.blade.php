@@ -3,10 +3,6 @@
 @section('title', 'Ayúdanos a Cuidarlos')
 
 @section('content')
-
-<!-- ========================================== -->
-<!-- 1. ESTILOS VISUALES (Mismo tema Welcome)   -->
-<!-- ========================================== -->
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
@@ -133,7 +129,7 @@
     </div>
 
     <div class="row g-4">
-        <!-- COLUMNA DE FILTROS (Sidebar) -->
+        <!-- COLUMNA DE FILTROS-->
         <div class="col-lg-3">
             <div class="feature-card pt-4 sticky-top" style="top: 20px; z-index: 10;">
                 <h4 class="fw-bold mb-4" style="color: var(--color-verde-oscuro);">
@@ -226,7 +222,6 @@
                     @endphp
 
                     <div class="col-md-6 col-xl-4">
-                        <!-- Feature Card sin padding en el contenedor para que la imagen llegue arriba -->
                         <div class="feature-card p-0 h-100 d-flex flex-column">
                             
                             <div class="position-relative">

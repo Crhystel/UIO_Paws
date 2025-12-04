@@ -4,9 +4,6 @@
 
 @section('content')
 
-<!-- ========================================== -->
-<!-- 1. ESTILOS VISUALES (Mismo tema Welcome)   -->
-<!-- ========================================== -->
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
@@ -139,23 +136,7 @@
                          alt="Foto principal de {{ $animal['animal_name'] }}">
                 </div>
                 
-                {{-- Galería de fotos adicionales --}}
-                @if(count($animal['photos']) > 1)
-                    <div class="row g-2">
-                        @foreach(array_slice($animal['photos'], 1) as $photo)
-                            <div class="col-3 col-sm-3">
-                                <a href="{{ asset('storage/' . $photo['image_url']) }}" data-lightbox="gallery">
-                                    <div class="ratio ratio-1x1">
-                                        <img src="{{ asset('storage/' . $photo['image_url']) }}" 
-                                             class="img-fluid w-100 h-100 object-fit-cover" 
-                                             style="border-radius: 20px; cursor: pointer; border: 2px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.05);"
-                                             alt="Foto de {{ $animal['animal_name'] }}">
-                                    </div>
-                                </a>
-                            </div>
-                        @endforeach
-                    </div>
-                @endif
+            
             @else
                 <div class="feature-card text-center py-5">
                     <i class="bi bi-image text-muted fs-1 opacity-50"></i>

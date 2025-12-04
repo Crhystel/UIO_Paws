@@ -53,8 +53,7 @@
         <div class="flex-grow-1 py-1">
             <h6 class="fw-bold mb-1">¡Revisa los campos!</h6>
             <div class="small opacity-75">
-                Por favor, corrige los errores marcados en el formulario.
-                {{-- Opcional: Si quieres listar los errores aquí mismo, descomenta lo siguiente: --}}
+                Por favor, llena los campos correctamente
                 {{-- <ul class="mb-0 mt-1 ps-3">
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
