@@ -11,6 +11,6 @@ class DashboardController extends Controller
         if (!Session::has('api_token')) {
             return redirect()->route('login');
         }
-        return view('dashboard');
+        return view('Dashboard');
     }
 }
