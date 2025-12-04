@@ -15,7 +15,6 @@
                     $isApproved = in_array($statusName, ['Aprobada', 'Aprobado']);
                     $isRejected = in_array($statusName, ['Rechazada', 'Rechazado']);
                     
-                    // Generamos la URL de la foto aquí para pasarla lista a todo lado
                     $hasPhoto = !empty($app['animal']['photos'][0]['image_url']);
                     $photoUrl = $hasPhoto ? $apiUrl . '/storage/' . $app['animal']['photos'][0]['image_url'] : null;
                 @endphp
@@ -38,41 +37,36 @@
 
                     {{-- ESTADO --}}
                     <td>
-                        <span @class([
-                            'badge rounded-pill',
-                            'bg-success' => $isApproved,
-                            'bg-danger'  => $isRejected,
-                            'bg-warning text-dark' => !$isApproved && !$isRejected
-                        ])>
+                        <span @class(['badge rounded-pill', 'bg-success' => $isApproved, 'bg-danger'  => $isRejected, 'bg-warning text-dark' => !$isApproved && !$isRejected])>
                             {{ $statusName }}
                         </span>
                     </td>
 
-                    {{-- ACCIONES --}}
+                    {{-- ACCIONES (Botones estandarizados) --}}
                     <td class="text-end">
                         @if($isApproved)
-                            {{-- Botón APROBADO --}}
-                            <button type="button" class="btn btn-sm btn-outline-success fw-bold shadow-sm" 
+                            {{-- Botón APROBADO (Unificado) --}}
+                            <button type="button" class="btn btn-sm btn-outline-success fw-bold rounded-pill" 
                                     data-bs-toggle="modal" 
                                     data-bs-target="#celebrationModal-{{ $app['id_adoption_application'] }}">
-                                <i class="bi bi-stars"></i> ¡Aprobado!
+                                <i class="bi bi-check-circle-fill"></i> Ver Detalles
                             </button>
                         
                         @elseif($isRejected)
-                            {{-- Botón RECHAZADO (Nuevo) --}}
-                            <button type="button" class="btn btn-sm btn-outline-danger fw-bold shadow-sm" 
+                            {{-- Botón RECHAZADO (Unificado) --}}
+                            <button type="button" class="btn btn-sm btn-outline-danger fw-bold rounded-pill" 
                                     data-bs-toggle="modal" 
                                     data-bs-target="#rejectionModal-{{ $app['id_adoption_application'] }}">
-                                <i class="bi bi-exclamation-circle"></i> Ver motivo
+                                <i class="bi bi-exclamation-circle"></i> Ver Motivo
                             </button>
                         
                         @else
-                            {{-- Botón PENDIENTE --}}
+                            {{-- Botón PENDIENTE CON NOTAS (Unificado) --}}
                             @if(!empty($app['admin_notes']))
-                                <button type="button" class="btn btn-sm btn-light text-muted border" 
+                                <button type="button" class="btn btn-sm btn-outline-secondary fw-bold rounded-pill" 
                                         data-bs-toggle="collapse" 
-                                        data-bs-target="#note-{{ $app['id_adoption_application'] }}">
-                                    <i class="bi bi-chat-text"></i> Ver notas
+                                        data-bs-target="#note-adoption-{{ $app['id_adoption_application'] }}">
+                                    <i class="bi bi-chat-text"></i> Ver Notas
                                 </button>
                             @else
                                 <span class="text-muted small fst-italic">En revisión</span>
@@ -83,11 +77,11 @@
 
                 {{-- NOTA PENDIENTE (Collapse) --}}
                 @if(!empty($app['admin_notes']) && !$isApproved && !$isRejected)
-                    <tr class="collapse bg-light" id="note-{{ $app['id_adoption_application'] }}">
+                    <tr class="collapse bg-light" id="note-adoption-{{ $app['id_adoption_application'] }}">
                         <td colspan="4" class="p-3 border-top-0">
                             <div class="d-flex align-items-start">
                                 <i class="bi bi-info-circle-fill text-primary me-2 mt-1"></i>
-                                <div><small class="text-uppercase text-muted fw-bold" style="font-size: 0.7rem;">Mensaje:</small>
+                                <div><small class="text-uppercase text-muted fw-bold" style="font-size: 0.7rem;">Mensaje del Refugio:</small>
                                 <p class="mb-0 text-dark">{{ $app['admin_notes'] }}</p></div>
                             </div>
                         </td>
@@ -106,13 +100,13 @@
     </table>
 </div>
 
+{{-- MODALES --}}
 @foreach($applications as $app)
     @php
         $statusName = $app['status']['status_name'] ?? '';
         $isApproved = in_array($statusName, ['Aprobada', 'Aprobado']);
         $isRejected = in_array($statusName, ['Rechazada', 'Rechazado']);
         
-        // Recalculamos url para el partial
         $hasPhoto = !empty($app['animal']['photos'][0]['image_url']);
         $photoUrl = $hasPhoto ? $apiUrl . '/storage/' . $app['animal']['photos'][0]['image_url'] : null;
     @endphp

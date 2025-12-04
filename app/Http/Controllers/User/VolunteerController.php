@@ -37,7 +37,7 @@ class VolunteerController extends Controller
             }
         }
 
-        return view('user.volunteer.apply', compact('opportunity'));
+        return view('user.volunteer.volunteer-form', compact('opportunity'));
     }
 
     /**

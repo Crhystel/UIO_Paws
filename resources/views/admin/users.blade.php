@@ -1,4 +1,4 @@
-@extends('layouts.app')
+<!-- @extends('layouts.app')
 
 @section('title', 'Gestión de Usuarios')
 
@@ -47,4 +47,4 @@
             </table>
         </div>
     </div>
-@endsection
+@endsection -->

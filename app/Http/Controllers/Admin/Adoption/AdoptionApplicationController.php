@@ -74,6 +74,6 @@ class AdoptionApplicationController extends Controller
             return back()->with('error', 'No se pudo actualizar el estado de la solicitud.')->withInput();
         }
 
-        return redirect()->route('admin.applications.adoption.index')->with('success', 'El estado de la solicitud ha sido actualizado exitosamente.');
+        return redirect()->route('admin.applications.index')->with('success', 'El estado de la solicitud ha sido actualizado exitosamente.');
     }
 }

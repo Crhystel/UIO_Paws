@@ -17,15 +17,17 @@ class RoleUserOnly
     public function handle(Request $request, Closure $next): Response
     {
         $userRole = Session::get('user_role');
-        if ($userRole !== 'User') {
-            if ($userRole === 'Admin') {
+        $roleLower = strtolower((string)$userRole);
+        if ($roleLower !== 'user') {
+            if ($roleLower === 'admin') {
                 return redirect()->route('admin.dashboard')->with('error', 'Los administradores no pueden realizar esta acción.');
             }
-            if ($userRole === 'Super Admin') {
+            if ($roleLower === 'super admin' || $roleLower === 'superadmin') {
                 return redirect()->route('superadmin.dashboard')->with('error', 'Los administradores no pueden realizar esta acción.');
             }
             return redirect('/')->with('error', 'No tienes permiso para realizar esta acción.');
         }
+
         return $next($request);
     }
 }

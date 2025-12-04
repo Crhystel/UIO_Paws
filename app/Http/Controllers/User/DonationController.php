@@ -24,7 +24,7 @@ class DonationController extends Controller
     /**
      * Muestra el formulario de donación con la lista de artículos disponibles.
      */
-    public function create()
+    public function create(Request $request)
     {
         $response = Http::get("{$this->apiBaseUrl}/public/donation-items?per_page=100");
 
@@ -34,8 +34,9 @@ class DonationController extends Controller
         
         $responseJson = $response->json();
         $itemsCatalog = $responseJson['data'] ?? $responseJson;
+        $preselectedId = $request->query('preselected_id');
         
-        return view('user.donations.form', compact('itemsCatalog'));
+        return view('user.donations.donation-form', compact('itemsCatalog', 'preselectedId'));
     }
 
     /**

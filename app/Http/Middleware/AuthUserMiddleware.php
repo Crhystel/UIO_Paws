@@ -8,12 +8,10 @@ use Illuminate\Support\Facades\Session;
 
 class AuthUserMiddleware
 {
-    /**
-     * Handle an incoming request.
-     */
     public function handle(Request $request, Closure $next)
     {
         if (!Session::has('api_token')) {
+            session(['url.intended' => $request->fullUrl()]);
             return redirect()->route('login');
         }
 

@@ -1,12 +1,12 @@
 <div class="table-responsive">
-    {{-- Tabla con diseño idéntico a Adopciones --}}
+    {{-- Tabla con botones de acción 100% UNIFICADOS --}}
     <table class="table table-hover align-middle">
         <thead>
             <tr>
                 <th>Fecha</th>
                 <th>Resumen de Donación</th>
                 <th>Estado</th>
-                <th class="text-end">Acciones</th> {{-- Aquí es donde cambiamos Notas por Acciones --}}
+                <th class="text-end">Acciones</th>
             </tr>
         </thead>
         <tbody>
@@ -24,12 +24,10 @@
                     {{-- 1. FECHA --}}
                     <td>{{ \Carbon\Carbon::parse($app['application_date'])->format('d/m/Y') }}</td>
                     
-                    {{-- 2. RESUMEN (Icono + Nombre) - Estilo igual a la foto del animal --}}
+                    {{-- 2. RESUMEN --}}
                     <td>
                         <div class="d-flex align-items-center">
-                            {{-- Icono de regalo en lugar de foto de animal --}}
-                            <div class="rounded-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center me-2 border border-primary border-opacity-25" 
-                                 style="width:40px; height:40px;">
+                            <div class="rounded-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center me-2 border border-primary border-opacity-25" style="width:40px; height:40px;">
                                 <i class="bi bi-gift-fill"></i>
                             </div>
                             <div>
@@ -41,45 +39,60 @@
                         </div>
                     </td>
 
-                    {{-- 3. ESTADO (Badges) --}}
+                    {{-- 3. ESTADO --}}
                     <td>
-                         <span @class([
-                            'badge rounded-pill',
-                            'bg-success' => $isApproved,
-                            'bg-danger'  => $isRejected,
-                            'bg-warning text-dark' => !$isApproved && !$isRejected
-                        ])>
+                         <span @class(['badge rounded-pill', 'bg-success' => $isApproved, 'bg-danger'  => $isRejected, 'bg-warning text-dark' => !$isApproved && !$isRejected])>
                             {{ $statusName }}
-                        </span>
+                         </span>
                     </td>
 
-                    {{-- 4. ACCIONES (Botones que abren los modales) --}}
+                    {{-- 4. ACCIONES (Botones estandarizados) --}}
                     <td class="text-end">
                         @if($isApproved)
-                            {{-- Botón ÉXITO (Verde) --}}
-                            <button type="button" class="btn btn-sm btn-outline-success fw-bold shadow-sm" 
+                            {{-- Botón APROBADO (Unificado) --}}
+                            <button type="button" class="btn btn-sm btn-outline-success fw-bold rounded-pill" 
                                     data-bs-toggle="modal" 
                                     data-bs-target="#donationSuccess-{{ $app['id_donation_application'] }}">
-                                <i class="bi bi-check-circle-fill"></i> Instrucciones
+                                <i class="bi bi-check-circle-fill"></i> Ver Detalles
                             </button>
                         
                         @elseif($isRejected)
-                            {{-- Botón RECHAZO (Rojo) --}}
-                            <button type="button" class="btn btn-sm btn-outline-danger fw-bold shadow-sm" 
+                            {{-- Botón RECHAZADO (Unificado) --}}
+                            <button type="button" class="btn btn-sm btn-outline-danger fw-bold rounded-pill" 
                                     data-bs-toggle="modal" 
                                     data-bs-target="#donationReject-{{ $app['id_donation_application'] }}">
-                                <i class="bi bi-info-circle"></i> Ver motivo
+                                <i class="bi bi-exclamation-circle"></i> Ver Motivo
                             </button>
                         
                         @else
-                            {{-- Estado PENDIENTE --}}
-                            <span class="text-muted small fst-italic me-2">En revisión</span>
+                             {{-- Botón PENDIENTE CON NOTAS (Unificado) --}}
+                            @if(!empty($app['admin_notes']))
+                                <button type="button" class="btn btn-sm btn-outline-secondary fw-bold rounded-pill" 
+                                        data-bs-toggle="collapse" 
+                                        data-bs-target="#note-donation-{{ $app['id_donation_application'] }}">
+                                    <i class="bi bi-chat-text"></i> Ver Notas
+                                </button>
+                            @else
+                                <span class="text-muted small fst-italic">En revisión</span>
+                            @endif
                         @endif
                     </td>
                 </tr>
 
-                {{-- INCLUIR LOS MODALES CORRESPONDIENTES --}}
-                {{-- Esto carga el código de los modales ocultos que se activan con los botones --}}
+                {{-- NOTA PENDIENTE (Collapse) - Añadido para consistencia --}}
+                @if(!empty($app['admin_notes']) && !$isApproved && !$isRejected)
+                    <tr class="collapse bg-light" id="note-donation-{{ $app['id_donation_application'] }}">
+                        <td colspan="4" class="p-3 border-top-0">
+                             <div class="d-flex align-items-start">
+                                <i class="bi bi-info-circle-fill text-primary me-2 mt-1"></i>
+                                <div><small class="text-uppercase text-muted fw-bold" style="font-size: 0.7rem;">Mensaje del Refugio:</small>
+                                <p class="mb-0 text-dark">{{ $app['admin_notes'] }}</p></div>
+                            </div>
+                        </td>
+                    </tr>
+                @endif
+                
+                {{-- MODALES --}}
                 @if($isApproved)
                     @include('user.donations.partials.celebration-modal', ['app' => $app])
                 @elseif($isRejected)
