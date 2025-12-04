@@ -1,27 +1,19 @@
-<!-- Fuente Poppins -->
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700;800&display=swap" rel="stylesheet">
 
 <style>
-    /* VARIABLES DE COLOR BASADAS EN TUS WIREFRAMES */
     .navbar-custom {
-        /* Verde principal (Wireframe): Un verde salvia vibrante pero suave */
         --nav-green-primary: #74C69D; 
-        
-        /* Verde oscuro para texto (para que se lea bien) */
         --nav-text-dark: #1B4332; 
-        
-        /* Verde muy clarito para fondos activos (Hover) */
         --nav-green-light: #D8F3DC; 
-        
-        /* Color de acento (opcional, para detalles) */
         --nav-accent: #40916C;
 
         font-family: 'Poppins', sans-serif;
         background-color: rgba(255, 255, 255, 0.95);
         backdrop-filter: blur(10px);
-        box-shadow: 0 4px 20px rgba(82, 183, 136, 0.15); /* Sombra verdosa suave */
+        box-shadow: 0 4px 20px rgba(82, 183, 136, 0.15);
         padding: 15px 0;
-        border-bottom: 3px solid var(--nav-green-light); /* Detalle sutil abajo */
+        border-bottom: 3px solid var(--nav-green-light);
+        z-index: 1030; 
     }
 
     /* Logo */
@@ -39,7 +31,7 @@
     /* Enlaces del menú */
     .navbar-nav .nav-link {
         color: var(--nav-text-dark);
-        font-weight: 600; /* Un poco más grueso */
+        font-weight: 600;
         padding: 8px 18px !important;
         border-radius: 20px;
         transition: all 0.3s ease;
@@ -53,14 +45,14 @@
         transform: translateY(-2px);
     }
 
-    /* Enlace Activo (Página actual) */
+    /* Enlace Activo */
     .navbar-nav .nav-link.active {
-        color: #0d2e20 !important; /* Verde casi negro */
+        color: #0d2e20 !important;
         background-color: var(--nav-green-light);
-        box-shadow: inset 0 0 0 1px var(--nav-green-primary); /* Borde interno verde */
+        box-shadow: inset 0 0 0 1px var(--nav-green-primary);
     }
 
-    /* Botón Registrarse (El verde del Wireframe pero estilo Riley) */
+    /* Botón Registrarse */
     .btn-nav-register {
         background: linear-gradient(135deg, var(--nav-green-primary), var(--nav-accent));
         color: white !important;
@@ -100,7 +92,7 @@
         box-shadow: 0 10px 30px rgba(27, 67, 50, 0.1);
         padding: 10px;
         margin-top: 15px;
-        border-top: 4px solid var(--nav-green-primary); /* Detalle verde arriba */
+        border-top: 4px solid var(--nav-green-primary);
     }
     
     .dropdown-item {
@@ -123,13 +115,13 @@
         padding: 8px 12px;
     }
     .navbar-toggler-icon {
-        filter: invert(21%) sepia(16%) saturate(1459%) hue-rotate(107deg) brightness(96%) contrast(92%); /* Convierte el icono a verde oscuro */
+        filter: invert(21%) sepia(16%) saturate(1459%) hue-rotate(107deg) brightness(96%) contrast(92%);
     }
 </style>
 
 <nav class="navbar navbar-expand-lg sticky-top navbar-custom">
     <div class="container">
-        <!-- Logo con el verde del wireframe -->
+        <!-- Logo -->
         <a class="navbar-brand d-flex align-items-center gap-2" href="{{ route('home') }}">
             <span class="brand-icon">🐾</span>
             <span class="brand-text">UIO <span style="color: var(--nav-green-primary);">Paws</span></span>
@@ -141,8 +133,6 @@
 
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto align-items-center">
-                
-                <!-- Links de Navegación -->
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('public.animals.index') ? 'active' : '' }}" href="{{ route('public.animals.index') }}">
                         Ver Animales
@@ -159,19 +149,26 @@
                     </a>
                 </li>
 
-                <!-- Separador vertical (solo desktop) -->
                 <li class="nav-item d-none d-lg-block mx-2" style="color: var(--nav-green-light);">|</li>
 
                 @if(Session::has('api_token'))
-                    {{-- USUARIO LOGUEADO --}}
                     <li class="nav-item dropdown ms-lg-2">
                         <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            {{-- Avatar con fondo verde suave --}}
-                            <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold text-white" 
-                                 style="width: 38px; height: 38px; font-size: 0.9rem; background-color: var(--nav-green-primary);">
-                                {{ substr(Session::get('user_name', 'U'), 0, 1) }}
-                            </div>
-                            <span class="fw-bold">{{ explode(' ', Session::get('user_name', 'Usuario'))[0] }}</span>
+                            
+                            @php
+                                $userPhotoPath = Session::get('user_photo'); 
+                                $userName = Session::get('user_name', 'Usuario');
+                                $fallbackPhoto = 'https://ui-avatars.com/api/?name='.urlencode($userName).'&background=74C69D&color=fff&size=128';
+                                $displayPhoto = $userPhotoPath ? $userPhotoPath : $fallbackPhoto;
+                            @endphp
+
+                            {{-- FOTO DE PERFIL --}}
+                            <img src="{{ $displayPhoto }}" 
+                                 alt="Perfil" 
+                                 class="rounded-circle object-fit-cover shadow-sm border border-2 border-white" 
+                                 width="40" height="40">
+
+                            <span class="fw-bold">{{ explode(' ', $userName)[0] }}</span>
                         </a>
                         
                         <ul class="dropdown-menu dropdown-menu-end slide-in" aria-labelledby="navbarDropdown">
@@ -210,7 +207,6 @@
                         </ul>
                     </li>
                 @else
-                    {{-- INVITADO --}}
                     <li class="nav-item mt-3 mt-lg-0">
                         <a class="nav-link btn-nav-login text-center" href="{{ route('login') }}">
                             Iniciar Sesión

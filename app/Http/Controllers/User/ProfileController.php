@@ -35,7 +35,7 @@ class ProfileController extends Controller
 
         $user = $profileResponse->json();
         $contacts = $contactsResponse->successful() ? $contactsResponse->json() : [];
-        $apiUrl = $this->apiBaseUrl;
+        $apiUrl = str_replace('/api', '', $this->apiBaseUrl); 
         return view('user.profile.show', compact('user', 'contacts','apiUrl'));
     }
     public function update(Request $request)
@@ -73,6 +73,10 @@ class ProfileController extends Controller
         if ($response->failed()) {
             return back()->with('error', 'No se pudo subir la foto.');
         }
+        $newPath = $response->json()['path'];
+        $rootUrl = str_replace('/api', '', $this->apiBaseUrl);
+        $fullUrl = $rootUrl . '/storage/' . $newPath;
+        Session::put('user_photo', $fullUrl);
         
         return redirect()->route('user.profile.show')->with('success', 'Foto de perfil actualizada.');
     }

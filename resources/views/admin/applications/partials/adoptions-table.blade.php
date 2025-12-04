@@ -14,9 +14,12 @@
     <tbody>
         @forelse($applications as $app)
             @php
-                $apiUrl = env('API_URL'); 
-                $hasPhoto = !empty($app['animal']['photos'][0]['image_url']);
-                $photoUrl = $hasPhoto ? $apiUrl . '/storage/' . $app['animal']['photos'][0]['image_url'] : null;
+                $backendUrl = str_replace('/api', '', env('API_URL', 'http://127.0.0.1:8001'));
+                $animalPhotoPath = $app['animal']['photos'][0]['image_url'] ?? null;
+                $animalPhotoUrl = $animalPhotoPath 
+                    ? $backendUrl . '/storage/' . $animalPhotoPath 
+                    : null;
+
                 $statusName = $app['status']['status_name'] ?? 'Desconocido';
             @endphp
 
@@ -27,30 +30,41 @@
                 {{-- COLUMNA ADOPTANTE --}}
                 <td>
                     <div class="d-flex align-items-center">
-                        <div class="d-flex justify-content-center align-items-center rounded-circle me-2" style="width: 40px; height: 40px; background-color: var(--color-verde-suave); color: var(--color-verde-oscuro);">
-                            <i class="bi bi-person-fill fs-5"></i>
-                        </div>
+                        @php
+                            $userPhotoPath = $app['user']['profile_photo_path'] ?? null;
+                            $userPhotoUrl = $userPhotoPath 
+                                ? $backendUrl . '/storage/' . $userPhotoPath 
+                                : 'https://ui-avatars.com/api/?name='.urlencode($app['user']['first_name'].'+'.$app['user']['last_name']).'&background=D8F3DC&color=1B4332&size=100';
+                        @endphp
+
+                        <img src="{{ $userPhotoUrl }}" 
+                            class="rounded-circle me-2 object-fit-cover border border-1 border-success" 
+                            style="width: 40px; height: 40px;"
+                            alt="User"
+                            onerror="this.src='https://ui-avatars.com/api/?name=User&background=random'">
+
                         <div>
-                            <div class="fw-bold">{{ $app['user']['first_name'] }} {{ $app['user']['last_name'] }}</div>
+                            <div class="fw-bold text-dark">{{ $app['user']['first_name'] }} {{ $app['user']['last_name'] }}</div>
                             <small class="text-muted" style="font-size: 0.75rem;">{{ $app['user']['email'] ?? '' }}</small>
                         </div>
                     </div>
                 </td>
 
-                {{-- COLUMNA ANIMAL (Con tu lógica de imagen) --}}
+                {{-- COLUMNA ANIMAL --}}
                 <td>
                     <div class="d-flex align-items-center">
                         {{-- Foto o Placeholder --}}
                         <div class="me-3 flex-shrink-0">
-                            @if($photoUrl)
-                                <img src="{{ $photoUrl }}" 
-                                     alt="{{ $app['animal']['animal_name'] }}" 
-                                     class="rounded-circle shadow-sm border border-2 border-white object-fit-cover"
-                                     style="width: 45px; height: 45px;"
-                                     onerror="this.onerror=null; this.src='https://via.placeholder.com/45?text=Pet'">
+                            @if($animalPhotoUrl)
+                                {{-- USAMOS LA URL CORREGIDA AQUÍ --}}
+                                <img src="{{ $animalPhotoUrl }}" 
+                                    alt="{{ $app['animal']['animal_name'] }}" 
+                                    class="rounded-circle shadow-sm border border-2 border-white object-fit-cover"
+                                    style="width: 45px; height: 45px;"
+                                    onerror="this.onerror=null; this.src='https://via.placeholder.com/45?text=Pet'">
                             @else
                                 <div class="d-flex justify-content-center align-items-center rounded-circle shadow-sm border border-2 border-white" 
-                                     style="width: 45px; height: 45px; background-color: #FFF3E0; color: #FB8C00;">
+                                    style="width: 45px; height: 45px; background-color: #FFF3E0; color: #FB8C00;">
                                     <i class="bi bi-paw-fill fs-5"></i>
                                 </div>
                             @endif
@@ -88,8 +102,8 @@
                 {{-- ACCIONES --}}
                 <td class="text-end pe-4">
                     <a href="{{ route('admin.applications.adoption.show', $app['id_adoption_application']) }}" 
-                       class="btn btn-sm btn-outline-success rounded-pill fw-bold px-3 transition-hover">
-                       Revisar <i class="bi bi-arrow-right-short"></i>
+                    class="btn btn-sm btn-outline-success rounded-pill fw-bold px-3 transition-hover">
+                    Revisar <i class="bi bi-arrow-right-short"></i>
                     </a>
                 </td>
             </tr>

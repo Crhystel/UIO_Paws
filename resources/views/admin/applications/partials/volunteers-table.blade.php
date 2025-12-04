@@ -21,9 +21,20 @@
             {{-- Postulante --}}
             <td>
                 <div class="d-flex align-items-center">
-                    <div class="d-flex justify-content-center align-items-center rounded-circle me-2" style="width: 35px; height: 35px; background-color: #E3F2FD; color: #1976D2;">
-                        <i class="bi bi-person-badge-fill"></i>
-                    </div>
+                    {{-- LOGICA FOTO USUARIO --}}
+                    @php
+                        $backendUrl = str_replace('/api', '', env('API_URL', 'http://127.0.0.1:8001'));
+                        $userPhotoPath = $app['user']['profile_photo_path'] ?? null;
+                        $userPhotoUrl = $userPhotoPath 
+                            ? $backendUrl . '/storage/' . $userPhotoPath 
+                            : 'https://ui-avatars.com/api/?name='.urlencode($app['user']['first_name'].'+'.$app['user']['last_name']).'&background=E3F2FD&color=1976D2&size=100';
+                    @endphp
+
+                    <img src="{{ $userPhotoUrl }}" 
+                        class="rounded-circle me-2 object-fit-cover border border-1 border-primary" 
+                        style="width: 35px; height: 35px;"
+                        alt="User">
+
                     <div>
                         <div class="fw-bold">{{ $app['user']['first_name'] }} {{ $app['user']['last_name'] }}</div>
                         <small class="text-muted" style="font-size: 0.8rem;">{{ $app['user']['email'] ?? '' }}</small>

@@ -41,9 +41,6 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => $request->password,
         ]);
-        if ($loginResponse->failed()) {
-            return redirect()->route('login')->with('success', '¡Registro exitoso! Por favor, inicia sesión para continuar.');
-        }
 
         if ($loginResponse->failed()) {
             return redirect()->route('login')->with('success', '¡Registro exitoso! Por favor, inicia sesión para continuar.');
@@ -51,13 +48,23 @@ class AuthController extends Controller
         $data = $loginResponse->json();
         Session::put('api_token', $data['access_token']);
         Session::put('user_role', $data['user_role']);
-
         $profileResponse = Http::withToken($data['access_token'])->get(env('API_BASE_URL') . '/profile');
+        
         if($profileResponse->successful()){
-            Session::put('user_name', $profileResponse->json()['first_name']);
+            $userProfile = $profileResponse->json();
+            Session::put('user_name', $userProfile['first_name']);
+            if (!empty($userProfile['profile_photo_path'])) {
+                $rootUrl = str_replace('/api', '', env('API_BASE_URL'));
+                $fullPhotoUrl = $rootUrl . '/storage/' . $userProfile['profile_photo_path'];
+                Session::put('user_photo', $fullPhotoUrl);
+            } else {
+                Session::forget('user_photo');
+            }
+
         } else {
             Session::put('user_name', 'Usuario');
         }
+
         return redirect()->intended(route('dashboard'))
                          ->with('success', '¡Registro completado! Ahora puedes llenar tu solicitud.');
     }
@@ -80,14 +87,21 @@ class AuthController extends Controller
         Session::put('api_token', $data['access_token']);
         Session::put('user_role', $data['user_role']);
         $profileResponse = Http::withToken($data['access_token'])->get(env('API_BASE_URL') . '/profile');
+        
         if($profileResponse->successful()){
             $userProfile = $profileResponse->json();
             Session::put('user_name', $userProfile['first_name']);
+            if (!empty($userProfile['profile_photo_path'])) {
+                $rootUrl = str_replace('/api', '', env('API_BASE_URL'));
+                $fullPhotoUrl = $rootUrl . '/storage/' . $userProfile['profile_photo_path'];
+                Session::put('user_photo', $fullPhotoUrl);
+            } else {
+                Session::forget('user_photo');
+            }
+
         } else {
              Session::put('user_name', 'Usuario');
         }
-
-
         switch ($data['user_role']) {
             case 'Super Admin':
                 return redirect()->intended(route('superadmin.dashboard'));
@@ -100,18 +114,22 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        Http::withToken(Session::get('api_token'))->post(env('API_BASE_URL') . '/logout');
+        if(Session::has('api_token')){
+            Http::withToken(Session::get('api_token'))->post(env('API_BASE_URL') . '/logout');
+        }
         
-        Session::flush();
+        Session::flush(); 
         
         return redirect()->route('home');
     }
+
     public function redirectToLoginForAdoption($animalId)
     {
         $intendedUrl = route('adoption.form', $animalId);
         session(['url.intended' => $intendedUrl]);
         return redirect()->route('login');
     }
+
     public function startAdoptionProcess($animalId)
     {
         session(['url.intended' => route('adoption.form', $animalId)]);
