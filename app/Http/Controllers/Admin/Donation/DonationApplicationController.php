@@ -62,6 +62,6 @@ class DonationApplicationController extends Controller
             return back()->with('error', 'No se pudo actualizar el estado de la solicitud.')->withInput();
         }
         
-        return redirect()->route('admin.applications.donation.index')->with('success', 'Estado actualizado.');
+        return redirect()->route('admin.applications.index')->with('success', 'Estado actualizado.');
     }
 }
