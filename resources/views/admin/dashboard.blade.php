@@ -98,9 +98,8 @@
         <!-- 1. GESTIONAR ANIMALES -->
         <div class="col-md-6 col-lg-4">
             <div class="dashboard-card">
-                <!-- Icono sólido para que resalte -->
                 <div class="icon-box icon-green-solid shadow-sm">
-                    <i class="bi bi-paw-fill fs-1"></i>
+                    <i class="bi bi-gitlab fs-2"></i>
                 </div>
                 <h5 class="card-title">Gestionar Animales</h5>
                 <p class="text-muted small mb-4">Añadir, editar o eliminar perfiles de animales.</p>
