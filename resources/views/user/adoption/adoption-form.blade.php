@@ -3,10 +3,6 @@
 @section('title', 'Adopta a ' . $animal['animal_name'])
 
 @section('content')
-
-<!-- ========================================== -->
-<!-- 1. ESTILOS VISUALES (Tema Welcome)         -->
-<!-- ========================================== -->
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
@@ -125,8 +121,9 @@
                             <i class="bi bi-camera fs-1 text-muted opacity-50"></i>
                         </div>
                     @endif
-                    <div class="position-absolute bottom-0 end-0 bg-white rounded-circle p-2 shadow-sm" style="margin-bottom: 10px; margin-right: 10px;">
-                         <i class="bi bi-heart-fill text-danger fs-5"></i>
+                    <div class="position-absolute bottom-0 end-0 bg-white rounded-circle shadow-sm d-flex align-items-center justify-content-center" 
+                        style="width: 50px; height: 50px; margin-bottom: 10px; margin-right: 10px;">
+                        <i class="bi bi-heart-fill text-danger fs-5"></i>
                     </div>
                 </div>
                 
