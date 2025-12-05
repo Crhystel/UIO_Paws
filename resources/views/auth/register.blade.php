@@ -6,7 +6,7 @@
 <div class="row justify-content-center">
     <div class="col-md-6">
         <div class="card">
-            <div class="card-header">Crear una Cuenta</div>
+            <div class="card-header">Crear una nueva Cuenta</div>
             <div class="card-body">
                 <form method="POST" action="{{ route('register.submit') }}">
                     @csrf
