@@ -3,7 +3,7 @@
 @section('title', 'Mi Panel')
 
 @section('content')
-    <h1>Bienvenido a tu panel, {{ Session::get('user_name') }}!</h1>
+    <h1>Bienvenido a tu panel de UIO Paws, {{ Session::get('user_name') }}!</h1>
     <p>Desde aquí podrás gestionar tus adopciones, voluntariado, donaciones y lo necesario.</p>
 
     @if(session('error'))
