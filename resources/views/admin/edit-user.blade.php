@@ -3,7 +3,7 @@
 @section('title', 'Editar Usuario')
 
 @section('content')
-    <h1>Editar Usuario: {{ $user['name'] }}</h1>
+    <h1>Editar un Usuario: {{ $user['name'] }}</h1>
 
     <div class="card">
         <div class="card-body">
@@ -20,7 +20,7 @@
                     <label for="email" class="form-label">Correo Electrónico</label>
                     <input type="email" class="form-control" id="email" name="email" value="{{ $user['email'] }}" required>
                 </div>
-                
+
                 <div class="mb-3">
                     <label for="role" class="form-label">Rol</label>
                     <select name="role" id="role" class="form-select">
