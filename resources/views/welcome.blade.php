@@ -57,7 +57,7 @@
             <div class="text-center">
                 <img
                     src="{{ asset('images/perro mestizo.jpg') }}"
-                    alt="Sam el Mestizo"
+                    alt="Sam el perro Mestizo"
                     class="img-fluid rounded"
                     style="height: 200px; object-fit: cover; width: 100%;"
                 >
