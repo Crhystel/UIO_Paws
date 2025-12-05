@@ -3,7 +3,7 @@
 @section('title', 'Gestión de Usuarios')
 
 @section('content')
-    <h1>Panel de Administración de Usuarios</h1>
+    <h1>Panel de Administración de los Usuarios</h1>
     <p>Aquí puedes ver, editar y eliminar los usuarios del sistema.</p>
 
     @if(session('success'))
