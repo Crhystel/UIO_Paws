@@ -5,7 +5,7 @@
 @section('content')
     <h1>Panel de Administración de Usuarios</h1>
     <p>Aquí puedes ver, editar y eliminar los usuarios del sistema.</p>
-    
+
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
@@ -40,7 +40,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="text-center">No hay usuarios registrados.</td>
+                            <td colspan="5" class="text-center">No ningun hay usuarios registrados.</td>
                         </tr>
                     @endforelse
                 </tbody>
