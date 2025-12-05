@@ -30,7 +30,7 @@
                 </div>
 
                 <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">Cancelar</a>
-                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                <button type="submit" class="btn btn-primary">Guardar los Cambios</button>
             </form>
         </div>
     </div>
