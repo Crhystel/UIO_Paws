@@ -36,7 +36,7 @@
                     style="height: 200px; object-fit: cover; width: 100%;"
                 >
                 <h5 class="mt-2 mb-0 fw-bold">Dobby</h5>
-                <p class="text-muted small">GOLDEN RETRIEVER</p>
+                <p class="text-muted small">GOLDEN RETRIEVERR</p>
             </div>
         </div>
 
