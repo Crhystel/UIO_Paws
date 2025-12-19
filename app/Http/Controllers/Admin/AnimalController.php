@@ -74,7 +74,6 @@ class AnimalController extends Controller
             'sex' => 'required|in:Macho,Hembra',
             'age' => 'required|integer|min:0',
             'size' => 'required|in:Pequeño,Mediano,Grande',
-            'weight'=>'required|numeric',
             'main_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'record_event_date' => 'nullable|date|required_with:record_event_type,record_description',
             'record_event_type' => 'nullable|string|max:255|required_with:record_event_date,record_description',
